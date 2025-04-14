@@ -12,8 +12,6 @@ const transition = {
 
 export const GoogleGeminiEffect = ({
 	pathLengths,
-	title,
-	description,
 	className,
 }: {
 	pathLengths: MotionValue[];
@@ -35,7 +33,7 @@ export const GoogleGeminiEffect = ({
 				{/* <button className="font-bold bg-white rounded-full md:px-4 md:py-2 px-2 py-1 md:mt-24  md:text-base text-black text-xs  w-fit mx-auto "></button> */}
 				<ShimmerButton className="shadow-2xl z-50 bg-black mt-10 border-white">
 					<span className="whitespace-pre-wrap  text-center text-sm font-medium leading-none tracking-tight text-white dark:from-white dark:to-slate-900/10 lg:text-lg">
-						Discover AI's True Potential
+						Discover AIs True Potential
 					</span>
 				</ShimmerButton>
 			</div>

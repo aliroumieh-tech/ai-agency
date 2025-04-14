@@ -2,14 +2,14 @@
 import React from "react";
 import { BackgroundGradient } from "../ui/background-gradient";
 
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 
 export function BackgroundGradientCard({
 	image,
 	text,
 	title,
 }: {
-	image: string;
+	image: StaticImageData;
 	title: string;
 	text: string;
 }) {
@@ -17,7 +17,7 @@ export function BackgroundGradientCard({
 		<div>
 			<BackgroundGradient className="rounded-[22px] bg-black w-full sm:h-64 h-2/5 p-4 sm:p-10 dark:bg-zinc-900">
 				<Image
-					src={image || ""}
+					src={image}
 					alt="brain"
 					width={50}
 					height={50}

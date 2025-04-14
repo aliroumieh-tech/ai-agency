@@ -13,7 +13,7 @@ const Solution = () => {
 				Empower Your Business with AI Workflows
 			</SparklesText>
 			<p className="text-base font-mono text-gray-500 text-center -m-5">
-				Generic AI tools won't suffice. Our platform is purpose-built to provide{" "}
+				Generic AI tools wont suffice. Our platform is purpose-built to provide
 				<br />
 				exceptional AI-driven solutions for your unique business needs.
 			</p>

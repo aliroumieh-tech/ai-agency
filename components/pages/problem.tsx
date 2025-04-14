@@ -40,13 +40,13 @@ const Problem = () => {
 					}}
 					className="lg:mt-8 md:mt-10 lg:translate-y-0 md:-translate-y-7 lg:leading-[4.2rem] bg-gradient-to-b from-slate-300 to-slate-100 lg:py-20 bg-clip-text text-center text-3xl sm:text-4xl font-bold tracking-tight text-transparent md:text-5xl lg:text-6xl"
 				>
-					Shining a light on Your <br /> Problem's That we will Solve!
+					Shining a light on Your <br /> Problems That we will Solve!
 				</motion.h1>
 			</LampContainer>
 			<div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5 w-full lg:justify-between lg:bottom-10 bottom-0 px-5 bg-black -mt-64 pb-12">
 				{backgroundGradientData.map((item, i) => (
 					<BackgroundGradientCard
-						image={item.image as any}
+						image={item.image}
 						text={item.text}
 						title={item.title}
 						key={i}
