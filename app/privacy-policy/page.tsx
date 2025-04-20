@@ -88,7 +88,7 @@ const PrivacyPolicy = () => {
 					<li>Opt-out of marketing emails</li>
 				</ul>
 				<p className="mt-4">
-					Contact us at hello@yourdomain.app for data requests.
+					Contact us at roumieh029@gmail.com for data requests.
 				</p>
 			</section>
 
@@ -97,7 +97,7 @@ const PrivacyPolicy = () => {
 					🗑️ Data Deletion Instructions
 				</h2>
 				<p className="mb-4">
-					To request data deletion, please email hello@yourdomain.app with
+					To request data deletion, please email roumieh029@gmail.com with
 					subject: Delete My Data. We will process your request within 7
 					business days.
 				</p>
@@ -108,7 +108,7 @@ const PrivacyPolicy = () => {
 				<p className="mb-4">
 					If you have any questions about this Privacy Policy, contact us at:
 				</p>
-				<p className="font-medium">📧 hello@yourdomain.app</p>
+				<p className="font-medium">📧 roumieh029@gmail.com</p>
 			</section>
 		</div>
 	);
