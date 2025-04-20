@@ -98,7 +98,7 @@ const PrivacyPolicy = () => {
 				</h2>
 				<p className="mb-4">
 					To request data deletion, please email hello@yourdomain.app with
-					subject: "Delete My Data". We will process your request within 7
+					subject: Delete My Data. We will process your request within 7
 					business days.
 				</p>
 			</section>
