@@ -19,10 +19,10 @@ const Navbar = () => {
 
 	const navigationItems = [
 		{ name: "Home", link: "/" },
-		{ name: "Features", link: "/features" },
 		{ name: "Pricing", link: "/pricing" },
 		{ name: "About", link: "/about" },
 		{ name: "Contact", link: "/contact" },
+		{ name: "Privacy Policy", link: "/privacy-policy" },
 	];
 
 	const toggleMobileMenu = () => {

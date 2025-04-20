@@ -8,6 +8,7 @@ import Solution from "@/components/pages/solutions";
 import Problem from "@/components/pages/problem";
 import { ScrollProgress } from "@/components/magicui/scroll-progress";
 import Pricing from "@/components/pages/pricing";
+import ContactForm from "@/components/pages/contactForm";
 
 const Page = () => {
 	return (
@@ -43,6 +44,7 @@ const Page = () => {
 			<Solution />
 			<Pricing />
 			{/* <GoogleGeminiEffectDemo /> */}
+			<ContactForm />
 		</div>
 	);
 };
