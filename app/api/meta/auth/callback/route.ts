@@ -16,8 +16,9 @@ export async function GET(request: Request) {
 		console.log("🔐 Auth code received:", code);
 
 		// Meta app credentials - should be in environment variables in production
-		const clientId = process.env.META_CLIENT_ID!;
-		const clientSecret = process.env.META_CLIENT_SECRET!;
+		const clientId = process.env.META_CLIENT_ID || "539027055632321";
+		const clientSecret =
+			process.env.META_CLIENT_SECRET || "76ef5de16dc66e83c87aeb19ec71e430";
 		const redirectUri =
 			process.env.META_REDIRECT_URI ||
 			"https://agencyroumieh.vercel.app/api/meta/auth/callback";
