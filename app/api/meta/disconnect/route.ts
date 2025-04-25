@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 
-export async function POST(request: Request) {
+export async function POST() {
 	try {
 		// Get user ID (in a real app, you would get this from your auth system)
 		// For this example, we'll use a fixed user ID
