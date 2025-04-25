@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { DashboardCard } from "@/components/dashboard-card";
 import {
@@ -11,10 +11,10 @@ import {
 	Loader2,
 	AlertCircle,
 } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
+import { AuthStatusHandler } from "../../components/auth-status-handler";
 
 export default function ClientDashboardPage() {
-	const searchParams = useSearchParams();
 	const [authStatus, setAuthStatus] = useState<string | null>(null);
 	const [authError, setAuthError] = useState<string | null>(null);
 
@@ -30,19 +30,6 @@ export default function ClientDashboardPage() {
 		string | null
 	>(null);
 	const [deleteError, setDeleteError] = useState<string | null>(null);
-
-	// Check for auth status from redirect
-	useEffect(() => {
-		const status = searchParams.get("status");
-		const errorMsg = searchParams.get("message");
-
-		if (status === "connected") {
-			setAuthStatus("connected");
-		} else if (status === "error") {
-			setAuthStatus("error");
-			setAuthError(errorMsg || "Unknown error occurred during authentication");
-		}
-	}, [searchParams]);
 
 	// Handler for Disconnect Account
 	async function handleDisconnect() {
@@ -144,6 +131,20 @@ export default function ClientDashboardPage() {
 			<h1 className="text-3xl font-bold mb-8 text-center text-zinc-900 dark:text-zinc-100">
 				Client Integration Dashboard
 			</h1>
+
+			<Suspense
+				fallback={
+					<div className="my-4 text-center text-zinc-500">
+						Loading status...
+					</div>
+				}
+			>
+				<AuthStatusHandler
+					setAuthStatus={setAuthStatus}
+					setAuthError={setAuthError}
+				/>
+			</Suspense>
+
 			<div className="grid gap-6 md:gap-8">
 				{/* Section 1: Connect Account */}
 				<DashboardCard
