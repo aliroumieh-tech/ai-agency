@@ -85,7 +85,7 @@ export async function GET(request: Request) {
 			console.error("Supabase error:", error);
 			return NextResponse.redirect(
 				new URL(
-					`/dashboard?status=error&message=database_error${error}`,
+					`/dashboard?status=error&message=database_error${error.cause}`,
 					request.url
 				)
 			);
