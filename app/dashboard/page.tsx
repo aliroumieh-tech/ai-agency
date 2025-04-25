@@ -118,7 +118,7 @@ export default function ClientDashboardPage() {
 					asChild
 					className="w-full sm:w-auto"
 				>
-					<a href="https://www.facebook.com/v19.0/dialog/oauth?client_id=974077931475302&redirect_uri=https://agencyroumieh.vercel.app/api/meta/auth/callback&response_type=code&scope=instagram_basic,instagram_manage_messages,instagram_manage_comments,instagram_content_publish,instagram_manage_insights">
+					<a href="https://www.facebook.com/v19.0/dialog/oauth?client_id=539027055632321&redirect_uri=https://agencyroumieh.vercel.app/api/meta/auth/callback&response_type=code&scope=instagram_basic,instagram_manage_messages,instagram_manage_comments,instagram_content_publish,instagram_manage_insights">
 						Connect with Meta
 					</a>
 				</Button>
