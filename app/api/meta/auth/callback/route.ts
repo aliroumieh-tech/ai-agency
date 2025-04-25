@@ -13,21 +13,15 @@ export async function GET(request: Request) {
 	}
 
 	try {
-		console.log("🔐 Auth code received:", code);
-
 		// Meta app credentials - should be in environment variables in production
-		const clientId = process.env.META_CLIENT_ID || "539027055632321";
-		const clientSecret =
-			process.env.META_CLIENT_SECRET || "76ef5de16dc66e83c87aeb19ec71e430";
+		const clientId = "539027055632321";
+		const clientSecret = "76ef5de16dc66e83c87aeb19ec71e430";
 		const redirectUri =
-			process.env.META_REDIRECT_URI ||
 			"https://agencyroumieh.vercel.app/api/meta/auth/callback";
 
 		// Exchange the code for an access token
 		const tokenResponse = await fetch(
-			`https://graph.facebook.com/v19.0/oauth/access_token?client_id=${clientId}&redirect_uri=${encodeURIComponent(
-				redirectUri
-			)}&client_secret=${clientSecret}&code=${code}`,
+			`https://graph.facebook.com/v19.0/oauth/access_token?client_id=${clientId}&redirect_uri=${redirectUri}&client_secret=${clientSecret}&code=${code}`,
 			{
 				method: "GET",
 				headers: { "Content-Type": "application/json" },
@@ -40,7 +34,7 @@ export async function GET(request: Request) {
 			console.error("Token exchange failed:", tokenResponse.status, errorText);
 			return NextResponse.redirect(
 				new URL(
-					"/dashboard?status=error&message=token_exchange_failed",
+					`/dashboard?status=error&message=token_exchange_failed_${errorText}`,
 					request.url
 				)
 			);
