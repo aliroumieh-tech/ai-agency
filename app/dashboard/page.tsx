@@ -30,8 +30,10 @@ export default function ClientDashboardPage() {
 				throw new Error("Failed to disconnect. Please try again.");
 			}
 			setDisconnectSuccess(true);
-		} catch (error: any) {
-			setDisconnectError(error.message || "An unexpected error occurred.");
+		} catch (error) {
+			setDisconnectError(
+				error instanceof Error ? error.message : "An unexpected error occurred."
+			);
 		} finally {
 			setDisconnectLoading(false);
 		}
@@ -55,8 +57,10 @@ export default function ClientDashboardPage() {
 			const data = await res.json(); // Expecting a confirmation code
 			setDeleteConfirmationCode(data.confirmationCode || "Confirmed"); // Use code or generic confirmation
 			setDeleteSuccess(true);
-		} catch (error: any) {
-			setDeleteError(error.message || "An unexpected error occurred.");
+		} catch (error: unknown) {
+			setDeleteError(
+				error instanceof Error ? error.message : "An unexpected error occurred."
+			);
 		} finally {
 			setDeleteLoading(false);
 		}
