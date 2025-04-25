@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { supabase, type MetaConnection } from "@/lib/supabase";
 
 export async function GET(request: Request) {
 	const { searchParams } = new URL(request.url);
@@ -11,54 +12,95 @@ export async function GET(request: Request) {
 		);
 	}
 
-	console.log("🔐 Auth code received:", code);
+	try {
+		console.log("🔐 Auth code received:", code);
 
-	// Exchange the code for an access token
-	const tokenResponse = await fetch(
-		"https://graph.facebook.com/v19.0/oauth/access_token",
-		{
-			method: "GET",
-			headers: { "Content-Type": "application/json" },
-			// Replace with your actual client_id, client_secret, and redirect_uri
-			// The redirect_uri must match the one used in the login button/link
-			next: { revalidate: 0 },
+		// Meta app credentials - should be in environment variables in production
+		const clientId = process.env.META_CLIENT_ID!;
+		const clientSecret = process.env.META_CLIENT_SECRET!;
+		const redirectUri =
+			process.env.META_REDIRECT_URI ||
+			"https://agencyroumieh.vercel.app/api/meta/auth/callback";
+
+		// Exchange the code for an access token
+		const tokenResponse = await fetch(
+			`https://graph.facebook.com/v19.0/oauth/access_token?client_id=${clientId}&redirect_uri=${encodeURIComponent(
+				redirectUri
+			)}&client_secret=${clientSecret}&code=${code}`,
+			{
+				method: "GET",
+				headers: { "Content-Type": "application/json" },
+				next: { revalidate: 0 },
+			}
+		);
+
+		if (!tokenResponse.ok) {
+			const errorText = await tokenResponse.text();
+			console.error("Token exchange failed:", tokenResponse.status, errorText);
+			return NextResponse.redirect(
+				new URL(
+					"/dashboard?status=error&message=token_exchange_failed",
+					request.url
+				)
+			);
 		}
-	);
 
-	console.log("🔐 Token response:", tokenResponse);
+		const tokenData = await tokenResponse.json();
+		const accessToken = tokenData.access_token;
+		const expiresIn = tokenData.expires_in || 0;
 
-	const tokenData = await tokenResponse.json();
-	const accessToken = tokenData.access_token;
-	// const expiresIn = tokenData.expires_in;
+		// Get user info using the access token
+		const userRes = await fetch(
+			`https://graph.facebook.com/me?fields=id,name,email&access_token=${accessToken}`
+		);
 
-	// Get user info using the access token
-	const userRes = await fetch(
-		`https://graph.facebook.com/me?fields=id,name,email&access_token=${accessToken}`
-	);
-	const userData = await userRes.json();
+		if (!userRes.ok) {
+			const errorText = await userRes.text();
+			console.error("User data fetch failed:", userRes.status, errorText);
+			return NextResponse.redirect(
+				new URL("/dashboard?status=error&message=user_data_failed", request.url)
+			);
+		}
 
-	console.log("🔐 User data:", userData);
+		const userData = await userRes.json();
+		console.log("🔐 User data:", userData);
 
-	// Example: save to database
-	// await db.client.upsert({
-	// 	where: { fbUserId: userData.id },
-	// 	update: {
-	// 		accessToken,
-	// 		name: userData.name,
-	// 		email: userData.email,
-	// 		tokenExpiry: Date.now() + expiresIn * 1000,
-	// 	},
-	// 	create: {
-	// 		fbUserId: userData.id,
-	// 		accessToken,
-	// 		name: userData.name,
-	// 		email: userData.email,
-	// 		tokenExpiry: Date.now() + expiresIn * 1000,
-	// 	},
-	// });
+		// Get a mock user ID (in a real app, you would get this from your auth system)
+		// For this example, we'll use a fixed user ID
+		const userId = process.env.TEST_USER_ID || "test-user-123";
 
-	// Then redirect the user to the dashboard or success page
-	return NextResponse.redirect(
-		new URL("/dashboard?status=connected", request.url)
-	);
+		// Save the connection to Supabase
+		const metaConnection: MetaConnection = {
+			user_id: userId,
+			meta_user_id: userData.id,
+			access_token: accessToken,
+			token_expiry: Date.now() + expiresIn * 1000,
+			name: userData.name,
+			email: userData.email,
+		};
+
+		const { error } = await supabase
+			.from("meta_connections")
+			.upsert(metaConnection, {
+				onConflict: "meta_user_id",
+				ignoreDuplicates: false,
+			});
+
+		if (error) {
+			console.error("Supabase error:", error);
+			return NextResponse.redirect(
+				new URL("/dashboard?status=error&message=database_error", request.url)
+			);
+		}
+
+		// Then redirect the user to the dashboard with success status
+		return NextResponse.redirect(
+			new URL("/dashboard?status=connected", request.url)
+		);
+	} catch (error) {
+		console.error("Meta auth callback error:", error);
+		return NextResponse.redirect(
+			new URL("/dashboard?status=error&message=unexpected_error", request.url)
+		);
+	}
 }

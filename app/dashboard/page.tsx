@@ -1,11 +1,23 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { DashboardCard } from "@/components/dashboard-card";
-import { CheckCircle2, LogIn, LogOut, Trash2, Loader2 } from "lucide-react"; // Added Loader2 for loading state
+import {
+	CheckCircle2,
+	LogIn,
+	LogOut,
+	Trash2,
+	Loader2,
+	AlertCircle,
+} from "lucide-react";
+import { useSearchParams } from "next/navigation";
 
 export default function ClientDashboardPage() {
+	const searchParams = useSearchParams();
+	const [authStatus, setAuthStatus] = useState<string | null>(null);
+	const [authError, setAuthError] = useState<string | null>(null);
+
 	// State for Disconnect action
 	const [disconnectLoading, setDisconnectLoading] = useState(false);
 	const [disconnectSuccess, setDisconnectSuccess] = useState(false);
@@ -19,6 +31,19 @@ export default function ClientDashboardPage() {
 	>(null);
 	const [deleteError, setDeleteError] = useState<string | null>(null);
 
+	// Check for auth status from redirect
+	useEffect(() => {
+		const status = searchParams.get("status");
+		const errorMsg = searchParams.get("message");
+
+		if (status === "connected") {
+			setAuthStatus("connected");
+		} else if (status === "error") {
+			setAuthStatus("error");
+			setAuthError(errorMsg || "Unknown error occurred during authentication");
+		}
+	}, [searchParams]);
+
 	// Handler for Disconnect Account
 	async function handleDisconnect() {
 		setDisconnectLoading(true);
@@ -27,9 +52,14 @@ export default function ClientDashboardPage() {
 		try {
 			const res = await fetch("/api/meta/disconnect", { method: "POST" });
 			if (!res.ok) {
-				throw new Error("Failed to disconnect. Please try again.");
+				const errorData = await res.json().catch(() => ({}));
+				throw new Error(
+					errorData.error || "Failed to disconnect. Please try again."
+				);
 			}
 			setDisconnectSuccess(true);
+			// Reset auth status since we've disconnected
+			setAuthStatus(null);
 		} catch (error) {
 			setDisconnectError(
 				error instanceof Error ? error.message : "An unexpected error occurred."
@@ -48,15 +78,17 @@ export default function ClientDashboardPage() {
 		try {
 			const res = await fetch("/api/meta/data-deletion", { method: "POST" });
 			if (!res.ok) {
-				const errorData = await res.json().catch(() => ({})); // Try to parse error, default to empty object
+				const errorData = await res.json().catch(() => ({}));
 				throw new Error(
-					errorData.message ||
+					errorData.error ||
 						"Failed to request data deletion. Please try again."
 				);
 			}
-			const data = await res.json(); // Expecting a confirmation code
-			setDeleteConfirmationCode(data.confirmationCode || "Confirmed"); // Use code or generic confirmation
+			const data = await res.json();
+			setDeleteConfirmationCode(data.confirmationCode || "Confirmed");
 			setDeleteSuccess(true);
+			// Reset auth status since we've deleted everything
+			setAuthStatus(null);
 		} catch (error: unknown) {
 			setDeleteError(
 				error instanceof Error ? error.message : "An unexpected error occurred."
@@ -65,6 +97,47 @@ export default function ClientDashboardPage() {
 			setDeleteLoading(false);
 		}
 	}
+
+	// Get the connect button state based on auth status
+	const getConnectButton = () => {
+		if (authStatus === "connected") {
+			return (
+				<div className="flex items-center gap-2 text-green-600 font-medium">
+					<CheckCircle2 className="w-5 h-5" /> Account successfully connected
+				</div>
+			);
+		} else if (authStatus === "error") {
+			return (
+				<div className="flex flex-col gap-2">
+					<div className="flex items-center gap-2 text-red-600 font-medium">
+						<AlertCircle className="w-5 h-5" /> Authentication failed
+					</div>
+					{authError && (
+						<p className="text-sm text-red-600">Error: {authError}</p>
+					)}
+					<Button
+						asChild
+						className="w-full sm:w-auto mt-2"
+					>
+						<a href="https://www.instagram.com/oauth/authorize?enable_fb_login=0&force_authentication=1&client_id=974077931475302&redirect_uri=https://agencyroumieh.vercel.app/api/meta/auth/callback&response_type=code&scope=instagram_business_basic%2Cinstagram_business_manage_messages%2Cinstagram_business_manage_comments%2Cinstagram_business_content_publish%2Cinstagram_business_manage_insights">
+							Try Again
+						</a>
+					</Button>
+				</div>
+			);
+		} else {
+			return (
+				<Button
+					asChild
+					className="w-full sm:w-auto"
+				>
+					<a href="https://www.instagram.com/oauth/authorize?enable_fb_login=0&force_authentication=1&client_id=974077931475302&redirect_uri=https://agencyroumieh.vercel.app/api/meta/auth/callback&response_type=code&scope=instagram_business_basic%2Cinstagram_business_manage_messages%2Cinstagram_business_manage_comments%2Cinstagram_business_content_publish%2Cinstagram_business_manage_insights">
+						Connect with Meta
+					</a>
+				</Button>
+			);
+		}
+	};
 
 	return (
 		<main className="max-w-3xl mx-auto py-12 px-4 sm:px-6 lg:px-8 pt-44">
@@ -77,16 +150,7 @@ export default function ClientDashboardPage() {
 					icon={<LogIn className="w-6 h-6" />}
 					title="Connect Account"
 					description="Link your Instagram & Facebook accounts via Meta to enable features."
-					action={
-						<Button
-							asChild
-							className="w-full sm:w-auto"
-						>
-							<a href="https://www.instagram.com/oauth/authorize?enable_fb_login=0&force_authentication=1&client_id=974077931475302&redirect_uri=https://agencyroumieh.vercel.app/api/meta/auth/callback&response_type=code&scope=instagram_business_basic%2Cinstagram_business_manage_messages%2Cinstagram_business_manage_comments%2Cinstagram_business_content_publish%2Cinstagram_business_manage_insights">
-								Connect with Meta
-							</a>
-						</Button>
-					}
+					action={getConnectButton()}
 				/>
 
 				{/* Section 2: Disconnect Account */}
@@ -105,7 +169,7 @@ export default function ClientDashboardPage() {
 								<Button
 									variant="destructive"
 									onClick={handleDisconnect}
-									disabled={disconnectLoading}
+									disabled={disconnectLoading || authStatus !== "connected"}
 									className="w-full sm:w-auto"
 								>
 									{disconnectLoading && (
@@ -119,6 +183,11 @@ export default function ClientDashboardPage() {
 							{disconnectError && (
 								<p className="text-sm text-red-600 dark:text-red-500">
 									Error: {disconnectError}
+								</p>
+							)}
+							{authStatus !== "connected" && !disconnectSuccess && (
+								<p className="text-sm text-zinc-600 dark:text-zinc-400">
+									You need to connect an account first.
 								</p>
 							)}
 						</div>
@@ -150,7 +219,7 @@ export default function ClientDashboardPage() {
 								<Button
 									variant="outline"
 									onClick={handleDataDeletion}
-									disabled={deleteLoading}
+									disabled={deleteLoading || authStatus !== "connected"}
 									className="w-full sm:w-auto"
 								>
 									{deleteLoading && (
@@ -162,6 +231,11 @@ export default function ClientDashboardPage() {
 							{deleteError && (
 								<p className="text-sm text-red-600 dark:text-red-500">
 									Error: {deleteError}
+								</p>
+							)}
+							{authStatus !== "connected" && !deleteSuccess && (
+								<p className="text-sm text-zinc-600 dark:text-zinc-400">
+									You need to connect an account first.
 								</p>
 							)}
 						</div>
