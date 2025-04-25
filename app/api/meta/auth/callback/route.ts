@@ -29,7 +29,7 @@ export async function GET(request: Request) {
 
 	const tokenData = await tokenResponse.json();
 	const accessToken = tokenData.access_token;
-	const expiresIn = tokenData.expires_in;
+	// const expiresIn = tokenData.expires_in;
 
 	// Get user info using the access token
 	const userRes = await fetch(
