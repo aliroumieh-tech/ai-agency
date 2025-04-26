@@ -3,7 +3,6 @@ import Navbar from "@/components/layout/navbar";
 import HeroVideoDialog from "@/components/magicui/hero-video-dialog";
 import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
 import { HeroHighlight } from "@/components/ui/hero-highlight";
-import React from "react";
 import Solution from "@/components/pages/solutions";
 import Problem from "@/components/pages/problem";
 import { ScrollProgress } from "@/components/magicui/scroll-progress";
