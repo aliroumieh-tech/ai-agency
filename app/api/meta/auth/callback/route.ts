@@ -122,7 +122,10 @@ export async function GET(request: Request) {
 		}
 	} catch (error) {
 		return NextResponse.redirect(
-			new URL("/dashboard?status=error&message=unexpected_eror", request.url)
+			new URL(
+				`/dashboard?status=error&message=unexpected_eror_${error}`,
+				request.url
+			)
 		);
 	}
 }
