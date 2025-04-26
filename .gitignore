@@ -13,6 +13,8 @@
 # testing
 /coverage
 
+utils/firebase.ts
+
 # next.js
 /.next/
 /out/
