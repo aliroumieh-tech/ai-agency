@@ -7,7 +7,6 @@ import {
 	getDocs,
 	setDoc,
 	addDoc,
-	doc,
 } from "firebase/firestore";
 
 export async function GET(request: Request) {
