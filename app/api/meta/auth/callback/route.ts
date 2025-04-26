@@ -1,13 +1,5 @@
+import { admin } from "@/lib/firebaseAdmin";
 import { NextResponse } from "next/server";
-import { db } from "@/lib/firebase";
-import {
-	collection,
-	query,
-	where,
-	getDocs,
-	setDoc,
-	addDoc,
-} from "firebase/firestore";
 
 export async function GET(request: Request) {
 	const { searchParams } = new URL(request.url);
@@ -21,11 +13,9 @@ export async function GET(request: Request) {
 	}
 
 	try {
-		// Meta app credentials - should be in environment variables in production
-		const clientId = "539027055632321";
-		const clientSecret = "76ef5de16dc66e83c87aeb19ec71e430";
-		const redirectUri =
-			"https://agencyroumieh.vercel.app/api/meta/auth/callback";
+		const clientId = process.env.NEXT_PUBLIC_META_APP_ID!;
+		const clientSecret = process.env.META_APP_SECRET!;
+		const redirectUri = process.env.META_REDIRECT_URI!;
 
 		// Exchange the code for an access token
 		const tokenResponse = await fetch(
@@ -51,7 +41,7 @@ export async function GET(request: Request) {
 		const accessToken = tokenData.access_token;
 		const expiresIn = tokenData.expires_in || 0;
 
-		// Get user info using the access token
+		// Get user info
 		const userRes = await fetch(
 			`https://graph.facebook.com/me?fields=id,name,email&access_token=${accessToken}`
 		);
@@ -65,65 +55,49 @@ export async function GET(request: Request) {
 		}
 
 		const userData = await userRes.json();
-
-		// Get a mock user ID (in a real app, you would get this from your auth system)
-		// For this example, we'll use a fixed user ID
 		const userId = process.env.TEST_USER_ID || "test-user-123";
 
-		// Firestore upsert logic for metaConnection
-		try {
-			const q = query(
-				collection(db, "metaConnections"),
-				where("metaUserId", "==", userData.id)
-			);
-			const snapshot = await getDocs(q);
-			if (snapshot.empty) {
-				// Update existing
-				const docRef = snapshot.docs[0].ref;
-				await setDoc(
-					docRef,
-					{
-						userId,
-						accessToken: accessToken || "no_access_token",
-						tokenExpiry: Date.now() + expiresIn * 1000,
-						name: userData.name,
-						email: userData.email,
-						updatedAt: new Date(),
-					},
-					{ merge: true }
-				);
-			} else {
-				// Create new
-				await addDoc(collection(db, "metaConnections"), {
-					userId,
-					metaUserId: userData.id,
-					accessToken: accessToken || "no_access_token",
-					tokenExpiry: Date.now() + expiresIn * 1000,
-					name: userData.name,
-					email: userData.email,
-					createdAt: new Date(),
-					updatedAt: new Date(),
-				});
-			}
+		const metaConnectionsRef = admin.firestore().collection("metaConnections");
 
-			// Then redirect the user to the dashboard with success status
-			return NextResponse.redirect(
-				new URL("/dashboard?status=connected", request.url)
-			);
-		} catch (error) {
-			return NextResponse.redirect(
-				new URL(
-					`/dashboard?status=error&message=database_error_${
-						error instanceof Error ? error.message : "unknown_error"
-					}`,
-					request.url
-				)
-			);
+		// Check if connection already exists
+		const existingSnapshot = await metaConnectionsRef
+			.where("metaUserId", "==", userData.id)
+			.limit(1)
+			.get();
+
+		if (!existingSnapshot.empty) {
+			// Update existing document
+			const docRef = existingSnapshot.docs[0].ref;
+			await docRef.update({
+				userId,
+				accessToken,
+				tokenExpiry: Date.now() + expiresIn * 1000,
+				name: userData.name,
+				email: userData.email,
+				updatedAt: new Date(),
+			});
+		} else {
+			// Create a new document
+			await metaConnectionsRef.add({
+				userId,
+				metaUserId: userData.id,
+				accessToken,
+				tokenExpiry: Date.now() + expiresIn * 1000,
+				name: userData.name,
+				email: userData.email,
+				createdAt: new Date(),
+				updatedAt: new Date(),
+			});
 		}
+
+		return NextResponse.redirect(
+			new URL("/dashboard?status=connected", request.url)
+		);
 	} catch (error) {
+		console.error("Unexpected error:", error);
 		return NextResponse.redirect(
 			new URL(
-				`/dashboard?status=error&message=unexpected_eror_${error}`,
+				`/dashboard?status=error&message=unexpected_error_${error}`,
 				request.url
 			)
 		);
