@@ -126,7 +126,7 @@ export async function GET(request: Request) {
 	} catch (error) {
 		console.error("Meta auth callback error:", error);
 		return NextResponse.redirect(
-			new URL("/dashboard?status=error&message=unexpected_error", request.url)
+			new URL("/dashboard?status=error&message=unexpected_eror", request.url)
 		);
 	}
 }
