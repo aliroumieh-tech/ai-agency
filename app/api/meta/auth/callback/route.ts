@@ -68,7 +68,7 @@ export async function GET(request: Request) {
 		const metaConnection: MetaConnection = {
 			user_id: userId,
 			meta_user_id: userData.id,
-			access_token: accessToken,
+			access_token: accessToken || "no_access_token",
 			token_expiry: Date.now() + expiresIn * 1000,
 			name: userData.name,
 			email: userData.email,
