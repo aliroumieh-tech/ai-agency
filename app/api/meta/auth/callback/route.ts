@@ -39,7 +39,6 @@ export async function GET(request: Request) {
 
 		if (!tokenResponse.ok) {
 			const errorText = await tokenResponse.text();
-			console.error("Token exchange failed:", tokenResponse.status, errorText);
 			return NextResponse.redirect(
 				new URL(
 					`/dashboard?status=error&message=token_exchange_failed_${errorText}`,
@@ -66,7 +65,6 @@ export async function GET(request: Request) {
 		}
 
 		const userData = await userRes.json();
-		console.log("🔐 User data:", userData);
 
 		// Get a mock user ID (in a real app, you would get this from your auth system)
 		// For this example, we'll use a fixed user ID
@@ -79,7 +77,7 @@ export async function GET(request: Request) {
 				where("metaUserId", "==", userData.id)
 			);
 			const snapshot = await getDocs(q);
-			if (!snapshot.empty) {
+			if (snapshot.empty) {
 				// Update existing
 				const docRef = snapshot.docs[0].ref;
 				await setDoc(
@@ -113,7 +111,6 @@ export async function GET(request: Request) {
 				new URL("/dashboard?status=connected", request.url)
 			);
 		} catch (error) {
-			console.error("Database error:", error);
 			return NextResponse.redirect(
 				new URL(
 					`/dashboard?status=error&message=database_error_${
@@ -124,7 +121,6 @@ export async function GET(request: Request) {
 			);
 		}
 	} catch (error) {
-		console.error("Meta auth callback error:", error);
 		return NextResponse.redirect(
 			new URL("/dashboard?status=error&message=unexpected_eror", request.url)
 		);
