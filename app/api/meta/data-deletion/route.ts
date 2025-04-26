@@ -1,5 +1,13 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { db } from "@/lib/firebase";
+import {
+	collection,
+	query,
+	where,
+	getDocs,
+	writeBatch,
+	addDoc,
+} from "firebase/firestore";
 import crypto from "crypto";
 
 export async function POST() {
@@ -14,36 +22,30 @@ export async function POST() {
 			.toString("hex")
 			.toUpperCase();
 
-		// 1. Delete from meta_connections table
-		const { error: connectionError } = await supabase
-			.from("meta_connections")
-			.delete()
-			.eq("user_id", userId);
+		// 1. Delete from meta_connections table (Firestore)
+		const q = query(
+			collection(db, "metaConnections"),
+			where("userId", "==", userId)
+		);
+		const snapshot = await getDocs(q);
+		const batch = writeBatch(db);
+		snapshot.forEach((doc) => batch.delete(doc.ref));
+		await batch.commit();
 
-		if (connectionError) {
-			console.error("Error deleting Meta connections:", connectionError);
-			return NextResponse.json(
-				{ error: "Failed to delete Meta connections." },
-				{ status: 500 }
-			);
-		}
+		// 2. Optional: Delete any other Meta-related data (not implemented)
 
-		// 2. Optional: Delete any other Meta-related data
-		// Example if you have other tables:
-		// await supabase.from('meta_posts').delete().eq('user_id', userId);
-		// await supabase.from('meta_analytics').delete().eq('user_id', userId);
-
-		// 3. Create deletion record for audit/compliance
-		const { error: logError } = await supabase.from("deletion_logs").insert({
-			user_id: userId,
-			service: "meta",
-			confirmation_code: confirmationCode,
-			deleted_at: new Date().toISOString(),
-		});
-
-		if (logError) {
+		// 3. Create deletion record for audit/compliance (Firestore)
+		try {
+			await addDoc(collection(db, "deletionLogs"), {
+				userId,
+				service: "meta",
+				confirmationCode,
+				deletedAt: new Date(),
+				createdAt: new Date(),
+			});
+		} catch (error) {
 			// Non-critical error, just log it but still return success
-			console.error("Error logging deletion:", logError);
+			console.error("Error logging deletion:", error);
 		}
 
 		return NextResponse.json({

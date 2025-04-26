@@ -1,5 +1,12 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { db } from "@/lib/firebase";
+import {
+	collection,
+	query,
+	where,
+	getDocs,
+	writeBatch,
+} from "firebase/firestore";
 
 export async function POST() {
 	try {
@@ -7,22 +14,15 @@ export async function POST() {
 		// For this example, we'll use a fixed user ID
 		const userId = process.env.TEST_USER_ID || "test-user-123";
 
-		// Delete the connection from Supabase
-		const { error } = await supabase
-			.from("meta_connections")
-			.delete()
-			.eq("user_id", userId);
-
-		if (error) {
-			console.error("Error disconnecting Meta account:", error);
-			return NextResponse.json(
-				{ error: "Failed to disconnect Meta account." },
-				{ status: 500 }
-			);
-		}
-
-		// Optional: Revoke the access token with Meta's API
-		// This would require additional API calls to Meta
+		// Delete the connection using Firestore
+		const q = query(
+			collection(db, "metaConnections"),
+			where("userId", "==", userId)
+		);
+		const snapshot = await getDocs(q);
+		const batch = writeBatch(db);
+		snapshot.forEach((doc) => batch.delete(doc.ref));
+		await batch.commit();
 
 		return NextResponse.json({ success: true });
 	} catch (error) {

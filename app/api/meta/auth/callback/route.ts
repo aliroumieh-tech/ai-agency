@@ -1,5 +1,14 @@
 import { NextResponse } from "next/server";
-import { supabase, type MetaConnection } from "@/lib/supabase";
+import { db } from "@/lib/firebase";
+import {
+	collection,
+	query,
+	where,
+	getDocs,
+	setDoc,
+	addDoc,
+	doc,
+} from "firebase/firestore";
 
 export async function GET(request: Request) {
 	const { searchParams } = new URL(request.url);
@@ -64,37 +73,57 @@ export async function GET(request: Request) {
 		// For this example, we'll use a fixed user ID
 		const userId = process.env.TEST_USER_ID || "test-user-123";
 
-		// Save the connection to Supabase
-		const metaConnection: MetaConnection = {
-			user_id: userId,
-			meta_user_id: userData.id,
-			access_token: accessToken || "no_access_token",
-			token_expiry: Date.now() + expiresIn * 1000,
-			name: userData.name,
-			email: userData.email,
-		};
+		// Firestore upsert logic for metaConnection
+		try {
+			const q = query(
+				collection(db, "metaConnections"),
+				where("metaUserId", "==", userData.id)
+			);
+			const snapshot = await getDocs(q);
+			if (!snapshot.empty) {
+				// Update existing
+				const docRef = snapshot.docs[0].ref;
+				await setDoc(
+					docRef,
+					{
+						userId,
+						accessToken: accessToken || "no_access_token",
+						tokenExpiry: Date.now() + expiresIn * 1000,
+						name: userData.name,
+						email: userData.email,
+						updatedAt: new Date(),
+					},
+					{ merge: true }
+				);
+			} else {
+				// Create new
+				await addDoc(collection(db, "metaConnections"), {
+					userId,
+					metaUserId: userData.id,
+					accessToken: accessToken || "no_access_token",
+					tokenExpiry: Date.now() + expiresIn * 1000,
+					name: userData.name,
+					email: userData.email,
+					createdAt: new Date(),
+					updatedAt: new Date(),
+				});
+			}
 
-		const { error } = await supabase
-			.from("meta_connections")
-			.upsert(metaConnection, {
-				onConflict: "meta_user_id",
-				ignoreDuplicates: false,
-			});
-
-		if (error) {
-			console.error("Supabase error:", error);
+			// Then redirect the user to the dashboard with success status
+			return NextResponse.redirect(
+				new URL("/dashboard?status=connected", request.url)
+			);
+		} catch (error) {
+			console.error("Database error:", error);
 			return NextResponse.redirect(
 				new URL(
-					`/dashboard?status=error&message=database_error_${error.message}_${error.hint}`,
+					`/dashboard?status=error&message=database_error_${
+						error instanceof Error ? error.message : "unknown_error"
+					}`,
 					request.url
 				)
 			);
 		}
-
-		// Then redirect the user to the dashboard with success status
-		return NextResponse.redirect(
-			new URL("/dashboard?status=connected", request.url)
-		);
 	} catch (error) {
 		console.error("Meta auth callback error:", error);
 		return NextResponse.redirect(
