@@ -73,21 +73,23 @@ export async function GET(request: Request) {
 				userId,
 				accessToken,
 				tokenExpiry: Date.now() + expiresIn * 1000,
-				name: userData.name || "test",
+				name: userData.name,
 				email: userData.email || "test",
 				updatedAt: new Date(),
+				test: userData,
 			});
 		} else {
 			// Create a new document
 			await metaConnectionsRef.add({
 				userId,
-				metaUserId: userData.id || "test",
+				metaUserId: userData.id,
 				accessToken,
 				tokenExpiry: Date.now() + expiresIn * 1000,
-				name: userData.name || "test",
+				name: userData.name,
 				email: userData.email || "test",
 				createdAt: new Date(),
 				updatedAt: new Date(),
+				test: userData,
 			});
 		}
 
