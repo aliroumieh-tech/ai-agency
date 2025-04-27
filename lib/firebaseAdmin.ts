@@ -19,7 +19,7 @@ export interface ServiceAccount {
 export const serviceAccount = {
 	type: process.env.NEXT_PUBLIC_FIREBASE_TYPE!,
 	project_id: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID!,
-	private_key_id: process.env.NEXT_PUBLIC_FIREBASE_PRIVATE_KEY_ID! as string,
+	private_key_id: process.env.NEXT_PUBLIC_FIREBASE_PRIVATE_KEY_ID!,
 	private_key: process.env.NEXT_PUBLIC_FIREBASE_PRIVATE_KEY!,
 	client_email: process.env.NEXT_PUBLIC_FIREBASE_CLIENT_EMAIL!,
 	client_id: process.env.NEXT_PUBLIC_FIREBASE_CLIENT_ID!,
