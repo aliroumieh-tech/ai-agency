@@ -17,6 +17,10 @@ export async function GET(request: Request) {
 		const clientSecret = process.env.META_CLIENT_SECRET!;
 		const redirectUri = process.env.META_REDIRECT_URI!;
 
+		console.log("redirectUri", redirectUri);
+		console.log("clientId", clientId);
+		console.log("clientSecret", clientSecret);
+
 		// Exchange the code for an access token
 		const tokenResponse = await fetch(
 			`https://graph.facebook.com/v19.0/oauth/access_token?client_id=${clientId}&redirect_uri=${redirectUri}&client_secret=${clientSecret}&code=${code}`,
