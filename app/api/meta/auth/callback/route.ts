@@ -1,5 +1,5 @@
-import { admin } from "@/lib/firebaseAdmin";
 import { NextResponse } from "next/server";
+import { admin } from "../../../../../lib/firebaseAdmin";
 
 export async function GET(request: Request) {
 	const { searchParams } = new URL(request.url);
