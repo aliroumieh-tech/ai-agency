@@ -13,10 +13,9 @@ export async function GET(request: Request) {
 	}
 
 	try {
-		const clientId = "539027055632321";
-		const clientSecret = "76ef5de16dc66e83c87aeb19ec71e430";
-		const redirectUri =
-			"https://agencyroumieh.vercel.app/api/meta/auth/callback";
+		const clientId = process.env.META_CLIENT_ID;
+		const clientSecret = process.env.META_CLIENT_SECRET;
+		const redirectUri = process.env.META_REDIRECT_URI;
 
 		// Exchange the code for an access token
 		const tokenResponse = await fetch(
@@ -76,7 +75,6 @@ export async function GET(request: Request) {
 				name: userData.name,
 				email: userData.email || "test",
 				updatedAt: new Date(),
-				test: userData,
 			});
 		} else {
 			// Create a new document
@@ -89,7 +87,6 @@ export async function GET(request: Request) {
 				email: userData.email || "test",
 				createdAt: new Date(),
 				updatedAt: new Date(),
-				test: userData,
 			});
 		}
 
