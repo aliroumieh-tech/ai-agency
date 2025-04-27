@@ -13,7 +13,7 @@
 # testing
 /coverage
 
-utils/firebase.ts
+service_acount.json
 
 # next.js
 /.next/
