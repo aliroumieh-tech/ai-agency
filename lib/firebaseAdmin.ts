@@ -19,7 +19,7 @@ export const serviceAccount = {
 
 if (!getApps().length) {
 	initializeApp({
-		credential: cert(serviceAccount),
+		credential: cert(serviceAccount || ""),
 	});
 }
 
