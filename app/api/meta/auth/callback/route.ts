@@ -13,9 +13,9 @@ export async function GET(request: Request) {
 	}
 
 	try {
-		const clientId = process.env.NEXT_PUBLIC_META_CLIENT_ID!;
-		const clientSecret = process.env.NEXT_PUBLIC_META_CLIENT_SECRET!;
-		const redirectUri = process.env.NEXT_PUBLIC_META_REDIRECT_URI!;
+		const clientId = process.env.META_CLIENT_ID!;
+		const clientSecret = process.env.META_CLIENT_SECRET!;
+		const redirectUri = process.env.META_REDIRECT_URI!;
 
 		// Exchange the code for an access token
 		const tokenResponse = await fetch(
