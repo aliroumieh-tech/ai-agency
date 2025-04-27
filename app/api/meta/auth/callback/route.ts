@@ -13,9 +13,10 @@ export async function GET(request: Request) {
 	}
 
 	try {
-		const clientId = process.env.NEXT_PUBLIC_META_APP_ID!;
-		const clientSecret = process.env.META_APP_SECRET!;
-		const redirectUri = process.env.META_REDIRECT_URI!;
+		const clientId = "539027055632321";
+		const clientSecret = "76ef5de16dc66e83c87aeb19ec71e430";
+		const redirectUri =
+			"https://agencyroumieh.vercel.app/api/meta/auth/callback";
 
 		// Exchange the code for an access token
 		const tokenResponse = await fetch(
