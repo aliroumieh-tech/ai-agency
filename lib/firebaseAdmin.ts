@@ -1,11 +1,12 @@
 // utils/firebaseAdmin.ts
-import {
-	initializeApp,
-	cert,
-	getApps,
-	ServiceAccount,
-} from "firebase-admin/app";
+import { initializeApp, cert, getApps } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
+
+export interface ServiceAccount {
+	project_id: string;
+	private_key: string;
+	client_email: string;
+}
 
 export const serviceAccount = {
 	type: process.env.NEXT_PUBLIC_FIREBASE_TYPE!,
