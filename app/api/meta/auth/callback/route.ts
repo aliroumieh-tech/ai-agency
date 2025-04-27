@@ -62,15 +62,6 @@ export async function GET(request: Request) {
 
 		const metaConnectionsRef = admin.firestore().collection("metaConnections");
 
-		if (!metaConnectionsRef) {
-			return NextResponse.redirect(
-				new URL(
-					`/dashboard?status=error&message=unexpected_error_${"helooooooooooooooooooooooooooooooooooooo"}`,
-					request.url
-				)
-			);
-		}
-
 		// Check if connection already exists
 		const existingSnapshot = await metaConnectionsRef
 			.where("metaUserId", "==", userData.id)
