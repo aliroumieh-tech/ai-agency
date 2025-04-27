@@ -1,42 +1,30 @@
 import { NextResponse } from "next/server";
-import { db } from "@/lib/firebase";
-import {
-	collection,
-	query,
-	where,
-	getDocs,
-	writeBatch,
-	addDoc,
-} from "firebase/firestore";
 import crypto from "crypto";
+import { admin } from "../../../../lib/firebaseAdmin";
 
 export async function POST() {
 	try {
-		// Get user ID (in a real app, you would get this from your auth system)
-		// For this example, we'll use a fixed user ID
 		const userId = process.env.TEST_USER_ID || "test-user-123";
 
-		// Generate a confirmation code
 		const confirmationCode = crypto
 			.randomBytes(4)
 			.toString("hex")
 			.toUpperCase();
 
-		// 1. Delete from meta_connections table (Firestore)
-		const q = query(
-			collection(db, "metaConnections"),
-			where("userId", "==", userId)
-		);
-		const snapshot = await getDocs(q);
-		const batch = writeBatch(db);
+		// 1. Delete from metaConnections
+		const snapshot = await admin
+			.firestore()
+			.collection("metaConnections")
+			.where("userId", "==", userId)
+			.get();
+
+		const batch = admin.firestore().batch();
 		snapshot.forEach((doc) => batch.delete(doc.ref));
 		await batch.commit();
 
-		// 2. Optional: Delete any other Meta-related data (not implemented)
-
-		// 3. Create deletion record for audit/compliance (Firestore)
+		// 2. Create deletion record
 		try {
-			await addDoc(collection(db, "deletionLogs"), {
+			await admin.firestore().collection("deletionLogs").add({
 				userId,
 				service: "meta",
 				confirmationCode,
@@ -44,7 +32,6 @@ export async function POST() {
 				createdAt: new Date(),
 			});
 		} catch (error) {
-			// Non-critical error, just log it but still return success
 			console.error("Error logging deletion:", error);
 		}
 

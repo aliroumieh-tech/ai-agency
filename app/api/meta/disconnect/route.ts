@@ -1,26 +1,17 @@
 import { NextResponse } from "next/server";
-import { db } from "@/lib/firebase";
-import {
-	collection,
-	query,
-	where,
-	getDocs,
-	writeBatch,
-} from "firebase/firestore";
+import { admin } from "../../../../lib/firebaseAdmin";
 
 export async function POST() {
 	try {
-		// Get user ID (in a real app, you would get this from your auth system)
-		// For this example, we'll use a fixed user ID
 		const userId = process.env.TEST_USER_ID || "test-user-123";
 
-		// Delete the connection using Firestore
-		const q = query(
-			collection(db, "metaConnections"),
-			where("userId", "==", userId)
-		);
-		const snapshot = await getDocs(q);
-		const batch = writeBatch(db);
+		const snapshot = await admin
+			.firestore()
+			.collection("metaConnections")
+			.where("userId", "==", userId)
+			.get();
+
+		const batch = admin.firestore().batch();
 		snapshot.forEach((doc) => batch.delete(doc.ref));
 		await batch.commit();
 
