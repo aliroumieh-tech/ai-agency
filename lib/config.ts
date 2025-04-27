@@ -1,7 +1,6 @@
-// lib/env.ts
 import dotenv from "dotenv";
 
-dotenv.config(); // Load .env into process.env
+dotenv.config();
 
 export const META = {
 	CLIENT_ID: process.env.META_CLIENT_ID!,

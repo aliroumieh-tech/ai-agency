@@ -52,8 +52,6 @@ export async function GET(request: Request) {
 		);
 
 		if (!userRes.ok) {
-			const errorText = await userRes.text();
-			console.error("User data fetch failed:", userRes.status, errorText);
 			return NextResponse.redirect(
 				new URL("/dashboard?status=error&message=user_data_failed", request.url)
 			);
@@ -63,6 +61,15 @@ export async function GET(request: Request) {
 		const userId = process.env.TEST_USER_ID || "test-user-123";
 
 		const metaConnectionsRef = admin.firestore().collection("metaConnections");
+
+		if (!metaConnectionsRef) {
+			return NextResponse.redirect(
+				new URL(
+					`/dashboard?status=error&message=unexpected_error_${"helooooooooooooooooooooooooooooooooooooo"}`,
+					request.url
+				)
+			);
+		}
 
 		// Check if connection already exists
 		const existingSnapshot = await metaConnectionsRef
