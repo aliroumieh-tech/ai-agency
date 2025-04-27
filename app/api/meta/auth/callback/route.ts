@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { admin } from "../../../../../lib/firebaseAdmin";
+import { firebaseAdmin } from "../../../../../lib/firebaseAdmin";
 import { META } from "@/lib/config";
 
 export async function GET(request: Request) {
@@ -60,7 +60,9 @@ export async function GET(request: Request) {
 		const userData = await userRes.json();
 		const userId = process.env.TEST_USER_ID || "test-user-123";
 
-		const metaConnectionsRef = admin.firestore().collection("metaConnections");
+		const metaConnectionsRef = firebaseAdmin
+			.firestore()
+			.collection("metaConnections");
 
 		// Check if connection already exists
 		const existingSnapshot = await metaConnectionsRef

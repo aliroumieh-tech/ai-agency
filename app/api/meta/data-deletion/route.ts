@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
-import { admin } from "../../../../lib/firebaseAdmin";
+import { firebaseAdmin } from "../../../../lib/firebaseAdmin";
 
 export async function POST() {
 	try {
@@ -12,19 +12,19 @@ export async function POST() {
 			.toUpperCase();
 
 		// 1. Delete from metaConnections
-		const snapshot = await admin
+		const snapshot = await firebaseAdmin
 			.firestore()
 			.collection("metaConnections")
 			.where("userId", "==", userId)
 			.get();
 
-		const batch = admin.firestore().batch();
+		const batch = firebaseAdmin.firestore().batch();
 		snapshot.forEach((doc) => batch.delete(doc.ref));
 		await batch.commit();
 
 		// 2. Create deletion record
 		try {
-			await admin.firestore().collection("deletionLogs").add({
+			await firebaseAdmin.firestore().collection("deletionLogs").add({
 				userId,
 				service: "meta",
 				confirmationCode,

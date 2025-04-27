@@ -1,17 +1,17 @@
 import { NextResponse } from "next/server";
-import { admin } from "../../../../lib/firebaseAdmin";
+import { firebaseAdmin } from "../../../../lib/firebaseAdmin";
 
 export async function POST() {
 	try {
 		const userId = process.env.TEST_USER_ID || "test-user-123";
 
-		const snapshot = await admin
+		const snapshot = await firebaseAdmin
 			.firestore()
 			.collection("metaConnections")
 			.where("userId", "==", userId)
 			.get();
 
-		const batch = admin.firestore().batch();
+		const batch = firebaseAdmin.firestore().batch();
 		snapshot.forEach((doc) => batch.delete(doc.ref));
 		await batch.commit();
 
