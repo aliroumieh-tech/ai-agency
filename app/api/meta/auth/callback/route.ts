@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { admin } from "../../../../../lib/firebaseAdmin";
+import { META } from "@/lib/config";
 
 export async function GET(request: Request) {
 	const { searchParams } = new URL(request.url);
@@ -13,9 +14,9 @@ export async function GET(request: Request) {
 	}
 
 	try {
-		const clientId = process.env.META_CLIENT_ID;
-		const clientSecret = process.env.META_CLIENT_SECRET;
-		const redirectUri = process.env.META_REDIRECT_URI;
+		const clientId = META.CLIENT_ID;
+		const clientSecret = META.CLIENT_SECRET;
+		const redirectUri = META.REDIRECT_URI;
 
 		if (!clientId || !clientSecret || !redirectUri) {
 			throw new Error("Missing required Meta API environment variables.");
@@ -98,7 +99,6 @@ export async function GET(request: Request) {
 			new URL("/dashboard?status=connected", request.url)
 		);
 	} catch (error) {
-		console.error("Unexpected error:", error);
 		return NextResponse.redirect(
 			new URL(
 				`/dashboard?status=error&message=unexpected_error_${error}`,
