@@ -13,10 +13,13 @@ export async function GET(request: Request) {
 	}
 
 	try {
-		const clientId = process.env.NEXT_PUBLIC_META_CLIENT_ID!;
-		const clientSecret = process.env.NEXT_PUBLIC_META_CLIENT_SECRET!;
-		const redirectUri =
-			"https://agencyroumieh.vercel.app/api/meta/auth/callback";
+		const clientId = process.env.META_CLIENT_ID;
+		const clientSecret = process.env.META_CLIENT_SECRET;
+		const redirectUri = process.env.META_REDIRECT_URI;
+
+		if (!clientId || !clientSecret || !redirectUri) {
+			throw new Error("Missing required Meta API environment variables.");
+		}
 
 		// Exchange the code for an access token
 		const tokenResponse = await fetch(
