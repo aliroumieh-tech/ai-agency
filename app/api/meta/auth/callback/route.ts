@@ -13,13 +13,10 @@ export async function GET(request: Request) {
 	}
 
 	try {
-		const clientId = process.env.META_CLIENT_ID!;
-		const clientSecret = process.env.META_CLIENT_SECRET!;
-		const redirectUri = process.env.META_REDIRECT_URI!;
-
-		console.log("redirectUri", redirectUri);
-		console.log("clientId", clientId);
-		console.log("clientSecret", clientSecret);
+		const clientId = process.env.NEXT_PUBLIC_META_CLIENT_ID!;
+		const clientSecret = process.env.NEXT_PUBLIC_META_CLIENT_SECRET!;
+		const redirectUri =
+			"https://agencyroumieh.vercel.app/api/meta/auth/callback";
 
 		// Exchange the code for an access token
 		const tokenResponse = await fetch(
