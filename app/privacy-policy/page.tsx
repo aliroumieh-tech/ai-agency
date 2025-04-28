@@ -6,7 +6,7 @@ const PrivacyPolicy = () => {
 			<header className="text-center mb-12">
 				<h1 className="text-4xl font-bold mb-4">AI Lead Management Platform</h1>
 				<h2 className="text-3xl font-bold mb-8">🛡️ Privacy Policy</h2>
-				<p className="text-gray-600">Last updated: April 20, 2025</p>
+				<p className="text-gray-600">Last updated: April 20 2025</p>
 			</header>
 
 			<p className="mb-8">
@@ -100,8 +100,8 @@ const PrivacyPolicy = () => {
 				</h2>
 				<p className="mb-4">
 					To request deletion of your account and associated Instagram data,
-					please email roumieh029@gmail.com with the subject line: "Delete My
-					Data". We will process all data deletion requests within 7 business
+					please email roumieh029@gmail.com with the subject line: Delete My
+					Data. We will process all data deletion requests within 7 business
 					days.
 				</p>
 			</section>
