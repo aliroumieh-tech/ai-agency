@@ -4,7 +4,7 @@ const PrivacyPolicy = () => {
 	return (
 		<div className="max-w-4xl mx-auto px-4 py-8 pt-44">
 			<header className="text-center mb-12">
-				<h1 className="text-4xl font-bold mb-4">AI Agents SaaS</h1>
+				<h1 className="text-4xl font-bold mb-4">AI Lead Management Platform</h1>
 				<h2 className="text-3xl font-bold mb-8">🛡️ Privacy Policy</h2>
 				<p className="text-gray-600">Last updated: April 20, 2025</p>
 			</header>
@@ -12,27 +12,27 @@ const PrivacyPolicy = () => {
 			<p className="mb-8">
 				Your privacy is important to us. This Privacy Policy explains how we
 				collect, use, and protect your information when you interact with our
-				services, including our website, forms, and AI solutions.
+				services, including our website, forms, lead management platform, and AI
+				solutions.
 			</p>
 
 			<section className="mb-8">
 				<h2 className="text-2xl font-semibold mb-4">
-					🔍 What Information We Collect
+					🔍 Information We Collect
 				</h2>
 				<p className="mb-4">We may collect the following types of data:</p>
 				<ul className="list-disc pl-6 space-y-2">
-					<li>Personal Info: Name, email address, phone number</li>
+					<li>Personal Information: Name, email address, phone number</li>
 					<li>
-						Lead Details: Company name, project information, budget, or service
+						Business Details: Company name, project information, service
 						interest
 					</li>
 					<li>
-						Usage Data: Page views, session duration, clicks (via analytics
-						tools)
+						Social Media Data: Instagram account details (username, profile
+						info, direct messages, comments, insights)
 					</li>
 					<li>
-						Message Content: If you use WhatsApp, Facebook, or Instagram to
-						contact us
+						Usage Data: Page views, session duration, clicks (analytics tools)
 					</li>
 				</ul>
 			</section>
@@ -43,26 +43,25 @@ const PrivacyPolicy = () => {
 				</h2>
 				<p className="mb-4">We use your information to:</p>
 				<ul className="list-disc pl-6 space-y-2">
-					<li>Respond to your inquiries</li>
-					<li>Provide AI and lead management services</li>
-					<li>Improve website and user experience</li>
-					<li>Send project updates or marketing materials (if you opt in)</li>
+					<li>Provide lead management and customer engagement services</li>
+					<li>Allow businesses to manage their Instagram communications</li>
+					<li>Improve our platform and enhance user experience</li>
+					<li>Send updates or relevant information (if you opt-in)</li>
 				</ul>
 			</section>
 
 			<section className="mb-8">
-				<h2 className="text-2xl font-semibold mb-4">
-					🤝 Do We Share Your Data?
-				</h2>
+				<h2 className="text-2xl font-semibold mb-4">🤝 Data Sharing Policy</h2>
 				<p className="mb-4">
-					No, we do not sell or rent your information. We may share limited data
-					only with:
+					We do not sell, rent, or share your information with third parties
+					except in the following cases:
 				</p>
 				<ul className="list-disc pl-6 space-y-2">
-					<li>Meta/Facebook for ad integration and analytics</li>
-					<li>Our hosting and email providers (e.g., Vercel, Gmail)</li>
+					<li>Meta/Facebook, for Instagram Business account integration</li>
+					<li>Hosting and infrastructure providers (e.g., Vercel, Firebase)</li>
 					<li>
-						Automation tools (like Zapier, if connected) — only when necessary
+						Automation tools (such as n8n or Zapier) used to deliver our
+						services
 					</li>
 				</ul>
 			</section>
@@ -71,11 +70,13 @@ const PrivacyPolicy = () => {
 				<h2 className="text-2xl font-semibold mb-4">
 					🔐 How We Protect Your Data
 				</h2>
-				<p className="mb-4">We take security seriously. Our systems use:</p>
+				<p className="mb-4">
+					We implement industry-standard security measures, including:
+				</p>
 				<ul className="list-disc pl-6 space-y-2">
-					<li>HTTPS encryption</li>
-					<li>Secure cloud hosting (Vercel, Firebase, etc.)</li>
-					<li>Role-based access to sensitive data</li>
+					<li>HTTPS encryption across our platform</li>
+					<li>Secure cloud hosting environments</li>
+					<li>Role-based access control for sensitive information</li>
 				</ul>
 			</section>
 
@@ -83,12 +84,13 @@ const PrivacyPolicy = () => {
 				<h2 className="text-2xl font-semibold mb-4">📬 Your Rights</h2>
 				<p className="mb-4">You have the right to:</p>
 				<ul className="list-disc pl-6 space-y-2">
-					<li>Request a copy of your data</li>
-					<li>Ask us to delete your information</li>
-					<li>Opt-out of marketing emails</li>
+					<li>Request access to your data</li>
+					<li>Request deletion of your account and associated data</li>
+					<li>Opt-out of marketing communications at any time</li>
 				</ul>
 				<p className="mt-4">
-					Contact us at roumieh029@gmail.com for data requests.
+					To exercise any of these rights, please contact us at
+					roumieh029@gmail.com.
 				</p>
 			</section>
 
@@ -97,16 +99,18 @@ const PrivacyPolicy = () => {
 					🗑️ Data Deletion Instructions
 				</h2>
 				<p className="mb-4">
-					To request data deletion, please email roumieh029@gmail.com with
-					subject: Delete My Data. We will process your request within 7
-					business days.
+					To request deletion of your account and associated Instagram data,
+					please email roumieh029@gmail.com with the subject line: "Delete My
+					Data". We will process all data deletion requests within 7 business
+					days.
 				</p>
 			</section>
 
 			<section className="mb-8">
 				<h2 className="text-2xl font-semibold mb-4">📍 Contact</h2>
 				<p className="mb-4">
-					If you have any questions about this Privacy Policy, contact us at:
+					If you have any questions about this Privacy Policy or your data
+					rights, contact us at:
 				</p>
 				<p className="font-medium">📧 roumieh029@gmail.com</p>
 			</section>

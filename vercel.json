@@ -1,0 +1,9 @@
+{
+    "cron": [
+        {
+            "path": "/api/meta/refresh-token",
+            "schedule": "0 3 * * *",
+            "timezone": "UTC"
+        }
+    ]
+}
