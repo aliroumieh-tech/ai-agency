@@ -1,41 +1,35 @@
 import { NextResponse } from "next/server";
-import { db } from "@/lib/firebase"; // your Firebase Firestore client
-import {
-	collection,
-	getDocs,
-	query,
-	where,
-	updateDoc,
-	doc,
-} from "firebase/firestore";
+import { firebaseAdmin } from "@/lib/firebaseAdmin"; // your existing firebaseAdmin import
 
 export async function POST() {
 	try {
-		// Fetch connections about to expire (within next 7 days)
 		const now = Date.now();
 		const sevenDaysLater = now + 7 * 24 * 60 * 60 * 1000;
 
-		const q = query(
-			collection(db, "meta_connections"),
-			where("token_expiry", "<", sevenDaysLater)
-		);
-		const snapshot = await getDocs(q);
+		const metaConnectionsRef = firebaseAdmin
+			.firestore()
+			.collection("metaConnections");
+
+		// Fetch connections that need refresh
+		const snapshot = await metaConnectionsRef
+			.where("tokenExpiry", "<", sevenDaysLater)
+			.get();
 
 		if (snapshot.empty) {
 			console.log("No tokens need refreshing.");
 			return NextResponse.json({ message: "No tokens need refresh." });
 		}
 
-		const clientId = process.env.META_CLIENT_ID!;
-		const clientSecret = process.env.META_CLIENT_SECRET!;
+		const clientId = "539027055632321";
+		const clientSecret = "76ef5de16dc66e83c87aeb19ec71e430";
 
 		const refreshedTokens = [];
 
 		for (const docSnap of snapshot.docs) {
 			const connection = docSnap.data();
-			const connectionRef = doc(db, "meta_connections", docSnap.id);
+			const docRef = docSnap.ref;
 
-			const url = `https://graph.facebook.com/v19.0/oauth/access_token?grant_type=fb_exchange_token&client_id=${clientId}&client_secret=${clientSecret}&fb_exchange_token=${connection.access_token}`;
+			const url = `https://graph.facebook.com/v19.0/oauth/access_token?grant_type=fb_exchange_token&client_id=${clientId}&client_secret=${clientSecret}&fb_exchange_token=${connection.accessToken}`;
 
 			const response = await fetch(url, {
 				method: "GET",
@@ -45,7 +39,7 @@ export async function POST() {
 			});
 
 			if (!response.ok) {
-				console.error("Token refresh failed for", connection.meta_user_id);
+				console.error("Token refresh failed for", connection.metaUserId);
 				continue;
 			}
 
@@ -53,18 +47,19 @@ export async function POST() {
 			const newExpiry =
 				Date.now() + (refreshed.expires_in || 60 * 24 * 60 * 60) * 1000;
 
-			await updateDoc(connectionRef, {
-				access_token: refreshed.access_token,
-				token_expiry: newExpiry,
+			await docRef.update({
+				accessToken: refreshed.access_token,
+				tokenExpiry: newExpiry,
+				updatedAt: new Date(),
 			});
 
 			refreshedTokens.push({
-				user_id: connection.user_id,
-				meta_user_id: connection.meta_user_id,
-				new_access_token: refreshed.access_token,
+				userId: connection.userId,
+				metaUserId: connection.metaUserId,
+				newAccessToken: refreshed.access_token,
 			});
 
-			console.log(`✅ Token refreshed for ${connection.meta_user_id}`);
+			console.log(`✅ Token refreshed for ${connection.metaUserId}`);
 		}
 
 		return NextResponse.json({
