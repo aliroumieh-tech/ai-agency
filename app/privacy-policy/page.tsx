@@ -100,7 +100,7 @@ const PrivacyPolicy = () => {
 				</h2>
 				<p className="mb-4">
 					To request deletion of your account and associated Instagram data,
-					please email roumieh029@gmail.com with the subject line: Delete My
+					please email agency.roumieh@gmail.com with the subject line: Delete My
 					Data. We will process all data deletion requests within 7 business
 					days.
 				</p>
@@ -112,7 +112,7 @@ const PrivacyPolicy = () => {
 					If you have any questions about this Privacy Policy or your data
 					rights, contact us at:
 				</p>
-				<p className="font-medium">📧 roumieh029@gmail.com</p>
+				<p className="font-medium">📧 agency.roumieh@gmail.com</p>
 			</section>
 		</div>
 	);
