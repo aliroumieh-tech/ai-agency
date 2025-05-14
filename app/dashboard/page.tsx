@@ -31,6 +31,11 @@ export default function ClientDashboardPage() {
 	>(null);
 	const [deleteError, setDeleteError] = useState<string | null>(null);
 
+	const INSTAGRAM_AUTH_URL = `https://www.instagram.com/oauth/authorize?enable_fb_login=0&force_authentication=1&client_id=974077931475302&redirect_uri=${encodeURIComponent(
+		"https://agencyroumieh.vercel.app/api/meta/auth/callback"
+	)}&response_type=code&scope=instagram_business_basic%2Cinstagram_business_manage_messages%2Cinstagram_business_manage_comments%2Cinstagram_business_content_publish%2Cinstagram_business_manage_insights`;
+	// ...existing code...
+
 	// Handler for Disconnect Account
 	async function handleDisconnect() {
 		setDisconnectLoading(true);
@@ -106,9 +111,7 @@ export default function ClientDashboardPage() {
 						asChild
 						className="w-full sm:w-auto mt-2"
 					>
-						<a href="https://www.instagram.com/oauth/authorize?enable_fb_login=0&force_authentication=1&client_id=974077931475302&redirect_uri=https://agencyroumieh.vercel.app/api/meta/auth/callback&response_type=code&scope=instagram_business_basic%2Cinstagram_business_manage_messages%2Cinstagram_business_manage_comments%2Cinstagram_business_content_publish%2Cinstagram_business_manage_insights">
-							Try Again
-						</a>
+						<a href={INSTAGRAM_AUTH_URL}>Reconnect with Meta Instagram</a>
 					</Button>
 				</div>
 			);
@@ -118,9 +121,7 @@ export default function ClientDashboardPage() {
 					asChild
 					className="w-full sm:w-auto"
 				>
-					<a href="https://www.instagram.com/oauth/authorize?enable_fb_login=0&force_authentication=1&client_id=974077931475302&redirect_uri=https://agencyroumieh.vercel.app/api/meta/auth/callback&response_type=code&scope=instagram_business_basic%2Cinstagram_business_manage_messages%2Cinstagram_business_manage_comments%2Cinstagram_business_content_publish%2Cinstagram_business_manage_insights">
-						Connect with Meta Instagram
-					</a>
+					<a href={INSTAGRAM_AUTH_URL}>Connect with Meta Instagram</a>
 				</Button>
 			);
 		}
