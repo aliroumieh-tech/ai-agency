@@ -22,8 +22,7 @@ export async function GET(request: Request) {
 			throw new Error("Missing required Meta API environment variables.");
 		}
 
-		// Add this after getting the short-lived token:
-		const tokenUrl = `https://graph.instagram.com/access_token?grant_type=ig_exchange_token&client_secret=${clientSecret}&access_token=${shortLivedToken}`;
+		const tokenUrl = "https://api.instagram.com/oauth/access_token";
 
 		const tokenResponseIG = await fetch(tokenUrl, {
 			method: "POST",
@@ -67,8 +66,7 @@ export async function GET(request: Request) {
 			);
 		}
 
-		const tokenData =
-			(await tokenResponse.json()) || (await tokenResponseIG.json());
+		const tokenData = await tokenResponse.json();
 		const accessToken = tokenData.access_token;
 		const expiresIn = tokenData.expires_in || 0;
 
