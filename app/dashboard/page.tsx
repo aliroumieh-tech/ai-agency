@@ -26,7 +26,7 @@ const FACEBOOK_REDIRECT_URI =
 	"https://agencyroumieh.vercel.app/api/meta/auth/callback";
 const FACEBOOK_AUTH_URL = `https://www.facebook.com/v19.0/dialog/oauth?client_id=${FACEBOOK_CLIENT_ID}&redirect_uri=${encodeURIComponent(
 	FACEBOOK_REDIRECT_URI
-)}&response_type=code&scope=instagram_basic,instagram_manage_messages,instagram_manage_comments,instagram_content_publish,instagram_manage_insights`;
+)}&response_type=code&scope=instagram_basic,instagram_manage_messages,instagram_manage_comments,instagram_content_publish,instagram_manage_insights&provider=facebook`;
 
 export default function ClientDashboardPage() {
 	const [authStatus, setAuthStatus] = useState<string | null>(null);

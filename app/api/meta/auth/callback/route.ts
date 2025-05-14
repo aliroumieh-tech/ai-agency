@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { firebaseAdmin } from "../../../../../lib/firebaseAdmin";
 import { META } from "@/lib/config";
-//
+
 export async function GET(request: Request) {
 	const { searchParams } = new URL(request.url);
 	const code = searchParams.get("code");
+	const provider = searchParams.get("provider") || "facebook";
 
 	if (!code) {
 		return NextResponse.json(
@@ -14,17 +15,22 @@ export async function GET(request: Request) {
 	}
 
 	try {
-		const clientId = META.CLIENT_ID;
-		const clientSecret = META.CLIENT_SECRET;
-		// Always use the exact redirect_uri as in the frontend
-		const redirectUri =
-			"https://agencyroumieh.vercel.app/api/meta/auth/callback";
+		let clientId, clientSecret, redirectUri;
+		if (provider === "instagram") {
+			clientId = "974077931475302";
+			clientSecret = process.env.INSTAGRAM_CLIENT_SECRET || META.CLIENT_SECRET;
+			redirectUri = "https://agencyroumieh.vercel.app/api/meta/auth/callback";
+		} else {
+			clientId = "539027055632321";
+			clientSecret = process.env.FACEBOOK_CLIENT_SECRET || META.CLIENT_SECRET;
+			redirectUri = "https://agencyroumieh.vercel.app/api/meta/auth/callback";
+		}
 
 		if (!clientId || !clientSecret || !redirectUri) {
 			throw new Error("Missing required Meta API environment variables.");
 		}
 
-		const isInstagram = searchParams.get("provider") === "instagram";
+		const isInstagram = provider === "instagram";
 
 		const tokenUrl = isInstagram
 			? "https://api.instagram.com/oauth/access_token"
