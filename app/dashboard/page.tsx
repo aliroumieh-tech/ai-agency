@@ -14,18 +14,6 @@ import {
 import { Suspense } from "react";
 import { AuthStatusHandler } from "../../components/auth-status-handler";
 
-const INSTAGRAM_REDIRECT_URI =
-	"https://agencyroumieh.vercel.app/api/meta/auth/callback";
-const INSTAGRAM_AUTH_URL = `https://www.instagram.com/oauth/authorize?enable_fb_login=0&force_authentication=1&client_id=974077931475302&redirect_uri=${encodeURIComponent(
-	INSTAGRAM_REDIRECT_URI
-)}&response_type=code&scope=instagram_business_basic%2Cinstagram_business_manage_messages%2Cinstagram_business_manage_comments%2Cinstagram_business_content_publish%2Cinstagram_business_manage_insights`;
-
-const FACEBOOK_REDIRECT_URI =
-	"https://agencyroumieh.vercel.app/api/meta/auth/callback";
-const FACEBOOK_AUTH_URL = `https://www.facebook.com/v19.0/dialog/oauth?client_id=539027055632321&redirect_uri=${encodeURIComponent(
-	FACEBOOK_REDIRECT_URI
-)}&response_type=code&scope=instagram_basic,instagram_manage_messages,instagram_manage_comments,instagram_content_publish,instagram_manage_insights&provider=facebook`;
-
 export default function ClientDashboardPage() {
 	const [authStatus, setAuthStatus] = useState<string | null>(null);
 	const [authError, setAuthError] = useState<string | null>(null);
@@ -118,32 +106,22 @@ export default function ClientDashboardPage() {
 						asChild
 						className="w-full sm:w-auto mt-2"
 					>
-						<a href={FACEBOOK_AUTH_URL}>Reconnect with Facebook</a>
-					</Button>
-					<Button
-						asChild
-						className="w-full sm:w-auto mt-2"
-					>
-						<a href={INSTAGRAM_AUTH_URL}>Reconnect with Instagram</a>
+						<a href="https://www.facebook.com/v19.0/dialog/oauth?client_id=539027055632321&redirect_uri=https://agencyroumieh.vercel.app/api/meta/auth/callback&response_type=code&scope=instagram_basic,instagram_manage_messages,instagram_manage_comments,instagram_content_publish,instagram_manage_insights">
+							Try Again
+						</a>
 					</Button>
 				</div>
 			);
 		} else {
 			return (
-				<>
-					<Button
-						asChild
-						className="w-full sm:w-auto"
-					>
-						<a href={FACEBOOK_AUTH_URL}>Connect with Meta Facebook</a>
-					</Button>
-					<Button
-						asChild
-						className="w-full sm:w-auto"
-					>
-						<a href={INSTAGRAM_AUTH_URL}>Connect with Meta Instagram</a>
-					</Button>
-				</>
+				<Button
+					asChild
+					className="w-full sm:w-auto"
+				>
+					<a href="https://www.facebook.com/v19.0/dialog/oauth?client_id=539027055632321&redirect_uri=https://agencyroumieh.vercel.app/api/meta/auth/callback&response_type=code&scope=instagram_basic,instagram_manage_messages,instagram_manage_comments,instagram_content_publish,instagram_manage_insights">
+						Connect with Meta
+					</a>
+				</Button>
 			);
 		}
 	};

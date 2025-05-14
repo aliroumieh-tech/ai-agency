@@ -22,30 +22,6 @@ export async function GET(request: Request) {
 			throw new Error("Missing required Meta API environment variables.");
 		}
 
-		const tokenUrl = "https://api.instagram.com/oauth/access_token";
-
-		const tokenResponseIG = await fetch(tokenUrl, {
-			method: "POST",
-			headers: { "Content-Type": "application/x-www-form-urlencoded" },
-			body: new URLSearchParams({
-				client_id: "974077931475302",
-				client_secret: clientSecret,
-				grant_type: "authorization_code",
-				redirect_uri: redirectUri,
-				code,
-			}),
-		});
-
-		if (!tokenResponseIG.ok) {
-			const errorText = await tokenResponseIG.text();
-			return NextResponse.redirect(
-				new URL(
-					`/dashboard?status=error&message=token_exchange_failed_${errorText}`,
-					request.url
-				)
-			);
-		}
-
 		// Exchange the code for an access token
 		const tokenResponse = await fetch(
 			`https://graph.facebook.com/v19.0/oauth/access_token?client_id=${clientId}&redirect_uri=${redirectUri}&client_secret=${clientSecret}&code=${code}`,
@@ -75,17 +51,7 @@ export async function GET(request: Request) {
 			`https://graph.facebook.com/me?fields=id,name,email&access_token=${accessToken}`
 		);
 
-		const userResIG = await fetch(
-			`https://graph.instagram.com/me?fields=id,username,account_type&access_token=${accessToken}`
-		);
-
 		if (!userRes.ok) {
-			return NextResponse.redirect(
-				new URL("/dashboard?status=error&message=user_data_failed", request.url)
-			);
-		}
-
-		if (!userResIG.ok) {
 			return NextResponse.redirect(
 				new URL("/dashboard?status=error&message=user_data_failed", request.url)
 			);
