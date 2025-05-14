@@ -42,17 +42,32 @@ export async function GET(request: Request) {
 		// 	);
 		// }
 
+		// ...existing code...
+
+		const params = new URLSearchParams();
+		params.append("client_id", clientId);
+		params.append("client_secret", clientSecret);
+		params.append("grant_type", "authorization_code");
+		params.append("redirect_uri", redirectUri);
+		params.append("code", code);
+
 		const responseIG = await fetch(
-			`https://api.instagram.com/oauth/access_token?client_id=974077931475302&redirect_uri=${redirectUri}&client_secret=${clientSecret}&code=${code}`,
+			"https://api.instagram.com/oauth/access_token",
 			{
 				method: "GET",
 				headers: { "Content-Type": "application/x-www-form-urlencoded" },
+				body: params,
 				next: { revalidate: 0 },
 			}
 		);
 
 		if (!responseIG.ok) {
-			const errorData = await responseIG.json();
+			let errorData;
+			try {
+				errorData = await responseIG.json();
+			} catch {
+				errorData = await responseIG.text();
+			}
 			console.error("Token Exchange Error:", errorData);
 			return NextResponse.redirect(
 				new URL(
@@ -64,6 +79,8 @@ export async function GET(request: Request) {
 
 		const data = await responseIG.json();
 		console.log("Token Exchange Success:", data);
+
+		// ...existing code...
 
 		// const tokenData = await tokenResponse.json();
 		// const accessToken = tokenData.access_token;
