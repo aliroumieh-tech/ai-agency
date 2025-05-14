@@ -17,7 +17,8 @@ export async function GET(request: Request) {
 		// Facebook App credentials
 		const clientId = META.CLIENT_ID;
 		const clientSecret = META.CLIENT_SECRET;
-		const redirectUri = META.REDIRECT_URI;
+		const redirectUri =
+			"https://agencyroumieh.vercel.app/api/meta/auth/callback";
 
 		// Instagram App credentials (kept separate)
 		const clientIdIG = "974077931475302";
