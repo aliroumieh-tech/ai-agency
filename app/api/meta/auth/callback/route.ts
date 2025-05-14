@@ -16,7 +16,9 @@ export async function GET(request: Request) {
 	try {
 		const clientId = META.CLIENT_ID;
 		const clientSecret = META.CLIENT_SECRET;
-		const redirectUri = META.REDIRECT_URI;
+		// Always use the exact redirect_uri as in the frontend
+		const redirectUri =
+			"https://agencyroumieh.vercel.app/api/meta/auth/callback";
 
 		if (!clientId || !clientSecret || !redirectUri) {
 			throw new Error("Missing required Meta API environment variables.");
@@ -44,7 +46,9 @@ export async function GET(request: Request) {
 			});
 		} else {
 			tokenResponse = await fetch(
-				`${tokenUrl}?client_id=${clientId}&redirect_uri=${redirectUri}&client_secret=${clientSecret}&code=${code}`,
+				`${tokenUrl}?client_id=${clientId}&redirect_uri=${encodeURIComponent(
+					redirectUri
+				)}&client_secret=${clientSecret}&code=${code}`,
 				{
 					method: "GET",
 					headers: { "Content-Type": "application/json" },
