@@ -100,7 +100,8 @@ export async function GET(request: Request) {
 			if (!igUserSnapshot.empty) {
 				// Update existing IG document
 				const docRef = igUserSnapshot.docs[0].ref;
-				await docRef.update({ ...igDataToStore, createdAt: undefined });
+				const { ...updateData } = igDataToStore;
+				await docRef.update(updateData);
 			} else {
 				// Create a new IG document
 				await igUsersRef.add(igDataToStore);
