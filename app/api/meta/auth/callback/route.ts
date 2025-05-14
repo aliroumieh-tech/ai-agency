@@ -60,35 +60,6 @@ export async function GET(request: Request) {
 		const userData = await userRes.json();
 		const userId = process.env.TEST_USER_ID || "test-user-123";
 
-		const responseIG = await fetch(
-			"https://api.instagram.com/oauth/access_token",
-			{
-				method: "POST",
-				headers: { "Content-Type": "application/x-www-form-urlencoded" },
-				body: new URLSearchParams({
-					client_id: "539027055632321",
-					client_secret: clientSecret,
-					grant_type: "authorization_code",
-					redirect_uri: redirectUri,
-					code: code as string,
-				}).toString(),
-			}
-		);
-
-		if (!responseIG.ok) {
-			const errorData = await responseIG.json();
-			console.error("Token Exchange Error:", errorData);
-			return NextResponse.redirect(
-				new URL(
-					"/dashboard?status=error&message=token_exchange_failed",
-					request.url
-				)
-			);
-		}
-
-		const data = await responseIG.json();
-		console.log("Token Exchange Success:", data);
-
 		const metaConnectionsRef = firebaseAdmin
 			.firestore()
 			.collection("metaConnections");
