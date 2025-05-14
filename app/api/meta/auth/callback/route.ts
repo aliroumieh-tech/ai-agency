@@ -33,11 +33,12 @@ export async function GET(request: Request) {
 
 		const isInstagram = provider === "instagram";
 
+		// Fix the tokenUrl construction for Facebook
 		const tokenUrl = isInstagram
 			? "https://api.instagram.com/oauth/access_token"
-			: `https://graph.facebook.com/v19.0/oauth/access_token`;
+			: "https://graph.facebook.com/v19.0/oauth/access_token";
 
-		// Exchange the code for an access token
+		// Fix the Facebook token exchange (your current code has template literal issues)
 		let tokenResponse;
 		if (isInstagram) {
 			tokenResponse = await fetch(tokenUrl, {
@@ -52,23 +53,28 @@ export async function GET(request: Request) {
 				}),
 			});
 		} else {
-			tokenResponse = await fetch(
-				`${tokenUrl}?client_id=${clientId}&redirect_uri=${encodeURIComponent(
-					redirectUri
-				)}&client_secret=${clientSecret}&code=${code}`,
-				{
-					method: "GET",
-					headers: { "Content-Type": "application/json" },
-					next: { revalidate: 0 },
-				}
-			);
+			// Fixed Facebook token exchange URL
+			const fbTokenUrl = new URL(tokenUrl);
+			fbTokenUrl.searchParams.append("client_id", clientId);
+			fbTokenUrl.searchParams.append("redirect_uri", redirectUri);
+			fbTokenUrl.searchParams.append("client_secret", clientSecret);
+			fbTokenUrl.searchParams.append("code", code);
+
+			tokenResponse = await fetch(fbTokenUrl.toString(), {
+				method: "GET",
+				headers: { "Content-Type": "application/json" },
+				next: { revalidate: 0 },
+			});
 		}
 
 		if (!tokenResponse.ok) {
-			const errorText = await tokenResponse.text();
+			const errorData = await tokenResponse.json().catch(() => ({}));
+			console.error("Token exchange failed:", errorData);
 			return NextResponse.redirect(
 				new URL(
-					`/dashboard?status=error&message=token_exchange_failed_${errorText}`,
+					`/dashboard?status=error&message=${encodeURIComponent(
+						errorData.error?.message || "token_exchange_failed"
+					)}`,
 					request.url
 				)
 			);
