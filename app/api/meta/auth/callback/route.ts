@@ -54,8 +54,8 @@ export async function GET(request: Request) {
 					// No need for Content-Type header when using FormData
 				},
 				body: new URLSearchParams({
-					client_id: clientId,
-					client_secret: clientSecret,
+					client_id: "974077931475302",
+					client_secret: "83d07abd15bc4ea2e9af9e123bf8d80f",
 					grant_type: "authorization_code",
 					redirect_uri:
 						"https://agencyroumieh.vercel.app/api/meta/auth/callback",
