@@ -19,6 +19,7 @@ export async function GET(request: Request) {
 		if (provider === "instagram") {
 			clientId = "974077931475302";
 			clientSecret = process.env.INSTAGRAM_CLIENT_SECRET || META.CLIENT_SECRET;
+			// Must match the frontend redirect_uri exactly, including provider param
 			redirectUri = "https://agencyroumieh.vercel.app/api/meta/auth/callback";
 		} else {
 			clientId = "539027055632321";

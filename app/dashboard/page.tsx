@@ -16,7 +16,7 @@ import { AuthStatusHandler } from "../../components/auth-status-handler";
 
 const INSTAGRAM_CLIENT_ID = "974077931475302";
 const INSTAGRAM_REDIRECT_URI =
-	"https://agencyroumieh.vercel.app/api/meta/auth/callback";
+	"https://agencyroumieh.vercel.app/api/meta/auth/callback?provider=instagram";
 const INSTAGRAM_AUTH_URL = `https://api.instagram.com/oauth/authorize?client_id=${INSTAGRAM_CLIENT_ID}&redirect_uri=${encodeURIComponent(
 	INSTAGRAM_REDIRECT_URI
 )}&response_type=code&scope=instagram_business_basic%2Cinstagram_business_manage_messages%2Cinstagram_business_manage_comments%2Cinstagram_business_content_publish%2Cinstagram_business_manage_insights&provider=instagram`;
