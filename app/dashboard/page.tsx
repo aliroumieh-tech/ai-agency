@@ -18,7 +18,7 @@ const INSTAGRAM_REDIRECT_URI =
 	"https://agencyroumieh.vercel.app/api/meta/auth/callback";
 const INSTAGRAM_AUTH_URL = `https://www.instagram.com/oauth/authorize?enable_fb_login=0&force_authentication=1&client_id=974077931475302&redirect_uri=${encodeURIComponent(
 	INSTAGRAM_REDIRECT_URI
-)}&response_type=code&scope=instagram_business_basic%2Cinstagram_business_manage_messages%2Cinstagram_business_manage_comments%2Cinstagram_business_content_publish%2Cinstagram_business_manage_insights&provider=instagram`;
+)}&response_type=code&scope=instagram_business_basic%2Cinstagram_business_manage_messages%2Cinstagram_business_manage_comments%2Cinstagram_business_content_publish%2Cinstagram_business_manage_insights`;
 
 const FACEBOOK_REDIRECT_URI =
 	"https://agencyroumieh.vercel.app/api/meta/auth/callback";
