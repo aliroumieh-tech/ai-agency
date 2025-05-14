@@ -14,14 +14,12 @@ import {
 import { Suspense } from "react";
 import { AuthStatusHandler } from "../../components/auth-status-handler";
 
-const INSTAGRAM_CLIENT_ID =
-	process.env.NEXT_PUBLIC_INSTAGRAM_CLIENT_ID || "YOUR_INSTAGRAM_CLIENT_ID";
+const INSTAGRAM_CLIENT_ID = "974077931475302";
 const INSTAGRAM_REDIRECT_URI =
-	process.env.NEXT_PUBLIC_INSTAGRAM_REDIRECT_URI ||
 	"https://agencyroumieh.vercel.app/api/meta/auth/callback";
 const INSTAGRAM_AUTH_URL = `https://api.instagram.com/oauth/authorize?client_id=${INSTAGRAM_CLIENT_ID}&redirect_uri=${encodeURIComponent(
 	INSTAGRAM_REDIRECT_URI
-)}&scope=user_profile,user_media&response_type=code`;
+)}&response_type=code&scope=instagram_business_basic%2Cinstagram_business_manage_messages%2Cinstagram_business_manage_comments%2Cinstagram_business_content_publish%2Cinstagram_business_manage_insights`;
 
 export default function ClientDashboardPage() {
 	const [authStatus, setAuthStatus] = useState<string | null>(null);
