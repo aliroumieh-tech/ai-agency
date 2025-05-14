@@ -1,11 +1,10 @@
 import { NextResponse } from "next/server";
 import { firebaseAdmin } from "../../../../../lib/firebaseAdmin";
 import { META } from "@/lib/config";
-
+//
 export async function GET(request: Request) {
 	const { searchParams } = new URL(request.url);
 	const code = searchParams.get("code");
-	const provider = searchParams.get("provider") || "facebook";
 
 	if (!code) {
 		return NextResponse.json(
@@ -15,88 +14,80 @@ export async function GET(request: Request) {
 	}
 
 	try {
-		let clientId, clientSecret, redirectUri;
-		if (provider === "instagram") {
-			clientId = "974077931475302";
-			clientSecret = process.env.INSTAGRAM_CLIENT_SECRET || META.CLIENT_SECRET;
-			// Must match the frontend redirect_uri exactly, including provider param
-			redirectUri = "https://agencyroumieh.vercel.app/api/meta/auth/callback";
-		} else {
-			clientId = "539027055632321";
-			clientSecret = process.env.FACEBOOK_CLIENT_SECRET || META.CLIENT_SECRET;
-			redirectUri = "https://agencyroumieh.vercel.app/api/meta/auth/callback";
-		}
+		const clientId = META.CLIENT_ID;
+		const clientSecret = META.CLIENT_SECRET;
+		const redirectUri = META.REDIRECT_URI;
 
 		if (!clientId || !clientSecret || !redirectUri) {
 			throw new Error("Missing required Meta API environment variables.");
 		}
 
-		const isInstagram = provider === "instagram";
+		// Add this after getting the short-lived token:
+		const tokenUrl = `https://graph.instagram.com/access_token?grant_type=ig_exchange_token&client_secret=${clientSecret}&access_token=${shortLivedToken}`;
 
-		// Fix the tokenUrl construction for Facebook
-		const tokenUrl = isInstagram
-			? "https://api.instagram.com/oauth/access_token"
-			: "https://graph.facebook.com/v19.0/oauth/access_token";
+		const tokenResponseIG = await fetch(tokenUrl, {
+			method: "POST",
+			headers: { "Content-Type": "application/x-www-form-urlencoded" },
+			body: new URLSearchParams({
+				client_id: "974077931475302",
+				client_secret: clientSecret,
+				grant_type: "authorization_code",
+				redirect_uri: redirectUri,
+				code,
+			}),
+		});
 
-		// Fix the Facebook token exchange (your current code has template literal issues)
-		let tokenResponse;
-		if (isInstagram) {
-			tokenResponse = await fetch(tokenUrl, {
-				method: "POST",
-				headers: { "Content-Type": "application/x-www-form-urlencoded" },
-				body: new URLSearchParams({
-					client_id: clientId,
-					client_secret: clientSecret,
-					grant_type: "authorization_code",
-					redirect_uri: redirectUri,
-					code,
-				}),
-			});
-		} else {
-			// Fixed Facebook token exchange URL
-			const fbTokenUrl = new URL(tokenUrl);
-			fbTokenUrl.searchParams.append("client_id", clientId);
-			fbTokenUrl.searchParams.append("redirect_uri", redirectUri);
-			fbTokenUrl.searchParams.append("client_secret", clientSecret);
-			fbTokenUrl.searchParams.append("code", code);
-
-			tokenResponse = await fetch(fbTokenUrl.toString(), {
-				method: "GET",
-				headers: { "Content-Type": "application/json" },
-				next: { revalidate: 0 },
-			});
-		}
-
-		if (!tokenResponse.ok) {
-			const errorData = await tokenResponse.json().catch(() => ({}));
-			console.error("Token exchange failed:", errorData);
+		if (!tokenResponseIG.ok) {
+			const errorText = await tokenResponseIG.text();
 			return NextResponse.redirect(
 				new URL(
-					`/dashboard?status=error&message=${encodeURIComponent(
-						errorData.error?.message || "token_exchange_failed"
-					)}`,
+					`/dashboard?status=error&message=token_exchange_failed_${errorText}`,
 					request.url
 				)
 			);
 		}
 
-		const tokenData = await tokenResponse.json();
+		// Exchange the code for an access token
+		const tokenResponse = await fetch(
+			`https://graph.facebook.com/v19.0/oauth/access_token?client_id=${clientId}&redirect_uri=${redirectUri}&client_secret=${clientSecret}&code=${code}`,
+			{
+				method: "GET",
+				headers: { "Content-Type": "application/json" },
+				next: { revalidate: 0 },
+			}
+		);
+
+		if (!tokenResponse.ok) {
+			const errorText = await tokenResponse.text();
+			return NextResponse.redirect(
+				new URL(
+					`/dashboard?status=error&message=token_exchange_failed_${errorText}`,
+					request.url
+				)
+			);
+		}
+
+		const tokenData =
+			(await tokenResponse.json()) || (await tokenResponseIG.json());
 		const accessToken = tokenData.access_token;
 		const expiresIn = tokenData.expires_in || 0;
 
 		// Get user info
-		let userRes;
-		if (isInstagram) {
-			userRes = await fetch(
-				`https://graph.instagram.com/me?fields=id,username,account_type&access_token=${accessToken}`
-			);
-		} else {
-			userRes = await fetch(
-				`https://graph.facebook.com/me?fields=id,name,email&access_token=${accessToken}`
+		const userRes = await fetch(
+			`https://graph.facebook.com/me?fields=id,name,email&access_token=${accessToken}`
+		);
+
+		const userResIG = await fetch(
+			`https://graph.instagram.com/me?fields=id,username,account_type&access_token=${accessToken}`
+		);
+
+		if (!userRes.ok) {
+			return NextResponse.redirect(
+				new URL("/dashboard?status=error&message=user_data_failed", request.url)
 			);
 		}
 
-		if (!userRes.ok) {
+		if (!userResIG.ok) {
 			return NextResponse.redirect(
 				new URL("/dashboard?status=error&message=user_data_failed", request.url)
 			);
