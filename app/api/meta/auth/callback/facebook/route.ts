@@ -110,7 +110,8 @@ export async function GET(request: Request) {
 			if (!existingSnapshot.empty) {
 				// Update existing FB document
 				const docRef = existingSnapshot.docs[0].ref;
-				await docRef.update({ ...fbDataToStore, createdAt: undefined });
+				const { createdAt, ...updateData } = fbDataToStore;
+				await docRef.update(updateData);
 			} else {
 				// Create a new FB document
 				await metaConnectionsRef.add(fbDataToStore);
