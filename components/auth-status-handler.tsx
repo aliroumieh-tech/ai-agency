@@ -18,7 +18,7 @@ export function AuthStatusHandler({
 		const status = searchParams.get("status");
 		const errorMsg = searchParams.get("message");
 
-		if (status === "connected") {
+		if (status === "connected_ig" || status === "connected_fb") {
 			setAuthStatus("connected");
 		} else if (status === "error") {
 			setAuthStatus("error");

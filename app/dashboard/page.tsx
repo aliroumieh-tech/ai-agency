@@ -107,7 +107,15 @@ export default function ClientDashboardPage() {
 						className="w-full sm:w-auto mt-2"
 					>
 						<a href="https://www.facebook.com/v19.0/dialog/oauth?client_id=539027055632321&redirect_uri=https://agencyroumieh.vercel.app/api/meta/auth/callback&response_type=code&scope=instagram_basic,instagram_manage_messages,instagram_manage_comments,instagram_content_publish,instagram_manage_insights">
-							Try Again
+							Try Again Facebook
+						</a>
+					</Button>
+					<Button
+						asChild
+						className="w-full sm:w-auto"
+					>
+						<a href="https://www.instagram.com/oauth/authorize?enable_fb_login=0&force_authentication=1&client_id=974077931475302&redirect_uri=https://agencyroumieh.vercel.app/api/meta/auth/callback/instagram&response_type=code&scope=instagram_business_basic%2Cinstagram_business_manage_messages%2Cinstagram_business_manage_comments%2Cinstagram_business_content_publish%2Cinstagram_business_manage_insights">
+							Try Again Instagram
 						</a>
 					</Button>
 				</div>
@@ -120,7 +128,7 @@ export default function ClientDashboardPage() {
 						className="w-full sm:w-auto"
 					>
 						<a href="https://www.facebook.com/v19.0/dialog/oauth?client_id=539027055632321&redirect_uri=https://agencyroumieh.vercel.app/api/meta/auth/callback/facebook&response_type=code&scope=instagram_basic,instagram_manage_messages,instagram_manage_comments,instagram_content_publish,instagram_manage_insights">
-							Connect with Meta
+							Connect with Meta Facebook
 						</a>
 					</Button>
 					<Button
@@ -128,7 +136,7 @@ export default function ClientDashboardPage() {
 						className="w-full sm:w-auto"
 					>
 						<a href="https://www.instagram.com/oauth/authorize?enable_fb_login=0&force_authentication=1&client_id=974077931475302&redirect_uri=https://agencyroumieh.vercel.app/api/meta/auth/callback/instagram&response_type=code&scope=instagram_business_basic%2Cinstagram_business_manage_messages%2Cinstagram_business_manage_comments%2Cinstagram_business_content_publish%2Cinstagram_business_manage_insights">
-							Connect with Meta ig
+							Connect with Meta Instagram
 						</a>
 					</Button>
 				</>
