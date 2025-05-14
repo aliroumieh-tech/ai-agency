@@ -44,20 +44,13 @@ export async function GET(request: Request) {
 
 		// ...existing code...
 
-		const params = new URLSearchParams();
-		params.append("client_id", clientId);
-		params.append("client_secret", clientSecret);
-		params.append("grant_type", "authorization_code");
-		params.append("redirect_uri", redirectUri);
-		params.append("code", code);
+		//graph.facebook.com/v19.0/oauth/access_token?client_id=${clientId}&redirect_uri=${redirectUri}&client_secret=${clientSecret}&code=${code}
 
 		const responseIG = await fetch(
-			"https://api.instagram.com/oauth/access_token",
+			`https://api.instagram.com/oauth/access_token?client_id=${clientId}&redirect_uri=${redirectUri}&client_secret=${clientSecret}&code=${code}`,
 			{
 				method: "GET",
 				headers: { "Content-Type": "application/x-www-form-urlencoded" },
-				body: params,
-				next: { revalidate: 0 },
 			}
 		);
 
