@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { firebaseAdmin } from "../../../../../lib/firebaseAdmin";
+// import { firebaseAdmin } from "../../../../../lib/firebaseAdmin";
 import { META } from "@/lib/config";
 
 export async function GET(request: Request) {
