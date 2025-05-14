@@ -22,15 +22,36 @@ export async function GET(request: Request) {
 			throw new Error("Missing required Meta API environment variables.");
 		}
 
+		const isInstagram = searchParams.get("provider") === "instagram";
+
+		const tokenUrl = isInstagram
+			? "https://api.instagram.com/oauth/access_token"
+			: `https://graph.facebook.com/v19.0/oauth/access_token`;
+
 		// Exchange the code for an access token
-		const tokenResponse = await fetch(
-			`https://graph.facebook.com/v19.0/oauth/access_token?client_id=${clientId}&redirect_uri=${redirectUri}&client_secret=${clientSecret}&code=${code}`,
-			{
-				method: "GET",
-				headers: { "Content-Type": "application/json" },
-				next: { revalidate: 0 },
-			}
-		);
+		let tokenResponse;
+		if (isInstagram) {
+			tokenResponse = await fetch(tokenUrl, {
+				method: "POST",
+				headers: { "Content-Type": "application/x-www-form-urlencoded" },
+				body: new URLSearchParams({
+					client_id: clientId,
+					client_secret: clientSecret,
+					grant_type: "authorization_code",
+					redirect_uri: redirectUri,
+					code,
+				}),
+			});
+		} else {
+			tokenResponse = await fetch(
+				`${tokenUrl}?client_id=${clientId}&redirect_uri=${redirectUri}&client_secret=${clientSecret}&code=${code}`,
+				{
+					method: "GET",
+					headers: { "Content-Type": "application/json" },
+					next: { revalidate: 0 },
+				}
+			);
+		}
 
 		if (!tokenResponse.ok) {
 			const errorText = await tokenResponse.text();
@@ -47,9 +68,16 @@ export async function GET(request: Request) {
 		const expiresIn = tokenData.expires_in || 0;
 
 		// Get user info
-		const userRes = await fetch(
-			`https://graph.facebook.com/me?fields=id,name,email&access_token=${accessToken}`
-		);
+		let userRes;
+		if (isInstagram) {
+			userRes = await fetch(
+				`https://graph.instagram.com/me?fields=id,username,account_type&access_token=${accessToken}`
+			);
+		} else {
+			userRes = await fetch(
+				`https://graph.facebook.com/me?fields=id,name,email&access_token=${accessToken}`
+			);
+		}
 
 		if (!userRes.ok) {
 			return NextResponse.redirect(
