@@ -93,7 +93,7 @@ export async function GET(request: Request) {
 		}
 		const igTokenData = await igTokenRes.json();
 		const igAccessToken = igTokenData.access_token;
-		const igExpiresIn = igTokenData.expires_in || 0;
+		// const igExpiresIn = igTokenData.expires_in || 0;
 
 		// Exchange for a long-lived Instagram access token
 		const igLongLivedRes = await fetch(
