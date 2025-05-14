@@ -47,31 +47,31 @@ export async function GET(request: Request) {
 		//graph.facebook.com/v19.0/oauth/access_token?client_id=${clientId}&redirect_uri=${redirectUri}&client_secret=${clientSecret}&code=${code}
 
 		const responseIG = await fetch(
-			`https://api.instagram.com/oauth/access_token?client_id=${clientId}&redirect_uri=${redirectUri}&client_secret=${clientSecret}&code=${code}`,
+			"https://api.instagram.com/oauth/access_token",
 			{
-				method: "GET",
-				headers: { "Content-Type": "application/x-www-form-urlencoded" },
+				method: "POST",
+				headers: {
+					// No need for Content-Type header when using FormData
+				},
+				body: new URLSearchParams({
+					client_id: clientId,
+					client_secret: clientSecret,
+					grant_type: "authorization_code",
+					redirect_uri:
+						"https://agencyroumieh.vercel.app/api/meta/auth/callback",
+					code,
+				}),
 			}
 		);
 
 		if (!responseIG.ok) {
-			let errorData;
-			try {
-				errorData = await responseIG.json();
-			} catch {
-				errorData = await responseIG.text();
-			}
-			console.error("Token Exchange Error:", errorData);
-			return NextResponse.redirect(
-				new URL(
-					"/dashboard?status=error&message=token_exchange_failed",
-					request.url
-				)
+			const error = await responseIG.json();
+			throw new Error(
+				`Instagram OAuth failed: ${error.error_message || error.error}`
 			);
 		}
 
-		const data = await responseIG.json();
-		console.log("Token Exchange Success:", data);
+		// const tokenData = await responseIG.json();
 
 		// ...existing code...
 
