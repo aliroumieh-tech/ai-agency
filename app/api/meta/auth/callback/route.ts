@@ -66,7 +66,7 @@ export async function GET(request: Request) {
 				method: "POST",
 				headers: { "Content-Type": "application/x-www-form-urlencoded" },
 				body: new URLSearchParams({
-					client_id: "974077931475302",
+					client_id: "539027055632321",
 					client_secret: clientSecret,
 					grant_type: "authorization_code",
 					redirect_uri: redirectUri,
