@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { DashboardCard } from "@/components/dashboard-card";
+import { DashboardCard } from "@/components/dashboard/dashboard-card";
 import {
 	CheckCircle2,
 	LogIn,
@@ -12,7 +12,7 @@ import {
 	AlertCircle,
 } from "lucide-react";
 import { Suspense } from "react";
-import { AuthStatusHandler } from "../../components/auth-status-handler";
+import { AuthStatusHandler } from "../../components/dashboard/auth-status-handler";
 
 export default function ClientDashboardPage() {
 	const [authStatus, setAuthStatus] = useState<string | null>(null);
