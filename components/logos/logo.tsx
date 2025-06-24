@@ -3,7 +3,7 @@
 import Image from "next/image";
 import logo from "../../public/websiteLogo.png";
 
-const pipelineFireLogo = (props: React.SVGProps<SVGSVGElement>) => (
+const pipelineFireLogo = () => (
 	<Image
 		src={logo}
 		alt="pipelineFire Logo"

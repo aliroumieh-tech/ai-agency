@@ -24,12 +24,6 @@ export default function Footer() {
 					>
 						Privacy Policy
 					</a>
-					<a
-						href="/terms-of-service"
-						className="hover:underline text-sm text-gray-600"
-					>
-						Terms of Service
-					</a>
 				</div>
 
 				{/* Socials */}

@@ -56,11 +56,6 @@ const imageVariants: Variants = {
 	},
 };
 
-interface TimelineItem {
-	title: string;
-	content: React.ReactNode;
-}
-
 export function TimelineDemo() {
 	const data = [
 		{
@@ -271,7 +266,7 @@ export function TimelineDemo() {
 						✓ Dynamic send-rate optimization (prevents sudden spikes that
 						trigger spam filters)
 						<br />
-						✓ Time-zone intelligence (emails arrive at each prospect's peak
+						✓ Time-zone intelligence (emails arrive at each prospects peak
 						activity hours)
 						<br />
 						✓ Bounce & complaint firewall (auto-pauses campaigns if risks
