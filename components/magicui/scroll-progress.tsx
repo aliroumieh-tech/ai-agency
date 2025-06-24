@@ -12,8 +12,9 @@ type ScrollProgressProps = Omit<
 export const ScrollProgress = React.forwardRef<
 	HTMLDivElement,
 	ScrollProgressProps
->(({ className, ...props }, ref) => {
+>((props, ref) => {
 	const { scrollYProgress } = useScroll();
+	const { className, ...rest } = props;
 
 	return (
 		<motion.div
@@ -25,7 +26,7 @@ export const ScrollProgress = React.forwardRef<
 			style={{
 				scaleX: scrollYProgress,
 			}}
-			{...props}
+			{...rest}
 		/>
 	);
 });
